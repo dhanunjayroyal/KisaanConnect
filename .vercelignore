@@ -26,9 +26,11 @@ otp-mailer.js
 start-tunnel.js
 deploy-gcp.ps1
 start-for-mobile.ps1
+render-deploy.js
 
 # Database & diagnostic scripts
 *.sql
+scratch/
 diagnose-*.js
 fix_*.js
 fix_*.py
@@ -56,5 +58,7 @@ uploads/*
 Dockerfile
 INSTALL_GUIDE.md
 deploy.js
-render-deploy.js
 fix-vercel-public.js
+hs_err_pid*.log
+*.log
+package-lock.json
