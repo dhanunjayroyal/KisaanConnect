@@ -1,0 +1,53 @@
+# Vercel — Files to exclude from deployment upload
+# This keeps the upload small (only static HTML/JS/CSS/assets)
+
+# Android project — not needed for frontend hosting
+app/
+gradle/
+.gradle/
+.kotlin/
+build/
+*.apk
+*.aab
+gradlew
+gradlew.bat
+gradle.properties
+settings.gradle
+build.gradle
+local.properties
+
+# Node.js backend — Vercel only hosts the static frontend
+node_modules/
+server.js
+firebase-db.js
+otp-mailer.js
+start-tunnel.js
+deploy-gcp.ps1
+start-for-mobile.ps1
+
+# Database & diagnostic scripts
+*.sql
+diagnose-*.js
+fix_*.js
+fix_*.py
+test_*.js
+test-*.js
+verify_*.js
+reset_*.js
+inspect_*.js
+find_*.js
+update_*.js
+copy_mascot.*
+image_to_base64.js
+
+# Secrets
+.env
+.env.*
+
+# Misc
+.git/
+uploads/*
+!uploads/.gitkeep
+Dockerfile
+INSTALL_GUIDE.md
+deploy.js
