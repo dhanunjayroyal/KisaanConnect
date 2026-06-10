@@ -5,6 +5,8 @@
 app/
 gradle/
 .gradle/
+.gradle_home/
+.gradle_tmp/
 .kotlin/
 build/
 *.apk
@@ -46,8 +48,13 @@ image_to_base64.js
 
 # Misc
 .git/
+.idea/
+.vscode/
+frontend-dist/
 uploads/*
 !uploads/.gitkeep
 Dockerfile
 INSTALL_GUIDE.md
 deploy.js
+render-deploy.js
+fix-vercel-public.js
