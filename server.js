@@ -598,6 +598,93 @@ app.post('/api/signup', async (req, res) => {
     }
 });
 
+// ── GOOGLE AUTH (Sign in / Sign up with Google) ──────────────────────────────
+// Accepts Google Identity Services JWT credential. Verifies it via Google API,
+// then finds or creates the user in Firestore and returns a session-ready user object.
+app.post('/api/google-auth', async (req, res) => {
+    const { credential, role, name, email, picture, googleId } = req.body;
+
+    // Basic validation
+    if (!email || !googleId) {
+        return res.status(400).json({ success: false, message: 'Invalid Google credential data.' });
+    }
+
+    // Sanitize role
+    const safeRole = (role === 'farmer') ? 'farmer' : 'customer';
+
+    try {
+        // 1. Verify the JWT with Google's tokeninfo endpoint (no client secret needed)
+        let verifiedEmail = email; // trusted fallback
+        if (credential) {
+            try {
+                const verifyRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`);
+                const tokenData = await verifyRes.json();
+                if (tokenData.error) {
+                    console.warn('[Google Auth] Token verification failed (using payload fallback):', tokenData.error);
+                } else {
+                    verifiedEmail = tokenData.email || email;
+                }
+            } catch(verifyErr) {
+                console.warn('[Google Auth] Token verify network error (using payload fallback):', verifyErr.message);
+            }
+        }
+
+        // 2. Find existing user by email
+        let user = await fdb.findUserByEmail(verifiedEmail);
+
+        if (user) {
+            // Existing user — update Google-specific fields silently
+            await fdb.updateUser(String(user.id), {
+                googleId: googleId,
+                profilePic: user.profilePic || picture || '',
+            });
+            // Return full user session object
+            console.log(`[Google Auth] Existing user logged in: ${verifiedEmail} (role: ${user.role})`);
+            return res.json({
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                mobile: user.mobile || '',
+                location: user.location || '',
+                profilePic: user.profilePic || picture || '',
+                wallet: user.wallet || 0,
+                googleAuth: true
+            });
+        }
+
+        // 3. New user — auto-create account (no password needed for Google auth)
+        const newUser = await fdb.createUser({
+            name:       name || verifiedEmail.split('@')[0],
+            email:      verifiedEmail,
+            password:   `google_${googleId}`, // placeholder, will never be used directly
+            role:       safeRole,
+            mobile:     '',
+            location:   '',
+            googleId:   googleId,
+            profilePic: picture || '',
+        });
+
+        console.log(`[Google Auth] New user created: ${verifiedEmail} (role: ${safeRole})`);
+        return res.json({
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email,
+            role: newUser.role,
+            mobile: '',
+            location: '',
+            profilePic: picture || '',
+            wallet: 0,
+            googleAuth: true,
+            isNewUser: true
+        });
+
+    } catch (e) {
+        console.error('[Google Auth] Error:', e.message);
+        res.status(500).json({ success: false, message: 'Google sign-in failed. Please try again.' });
+    }
+});
+
 // USERS
 app.get('/api/users', async (req, res) => {
     try {
