@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KisaanConnect - Administrative Login</title>
     <link rel="manifest" href="manifest.json">
+    <!-- ✅ Production env config: sets KISAAN_RENDER_URL for Vercel → Render routing -->
+    <script src="env-config.js"></script>
     <meta name="theme-color" content="#0277bd">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta name="description" content="Secure portal for KisaanConnect administrators to manage the indirect marketplace and user data.">
@@ -202,9 +204,11 @@
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
 
-            // Get API URL from Android interface if available
+            // Get API URL from Render production URL, Android interface, or fallback
             let API_URL;
-            if (window.Android && window.Android.getServerUrl) {
+            if (window.KISAAN_RENDER_URL && window.KISAAN_RENDER_URL.trim()) {
+                API_URL = window.KISAAN_RENDER_URL.replace(/\/$/, '') + '/api';
+            } else if (window.Android && window.Android.getServerUrl) {
                 API_URL = window.Android.getServerUrl();
             } else {
                 const isAndroid = navigator.userAgent.toLowerCase().includes('android');
