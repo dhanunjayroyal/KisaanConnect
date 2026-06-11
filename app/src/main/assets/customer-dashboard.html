@@ -12,6 +12,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <!-- ✅ Production env config: sets KISAAN_RENDER_URL for Vercel → Render routing -->
+    <script src="env-config.js"></script>
     <!-- ✅ Network utility: auto-discovers server IP, handles Android/PWA/Browser -->
     <script src="kisaan-network.js"></script>
     <script>
@@ -24,7 +26,14 @@
         function loadSocketScript() {
             return new Promise((resolve) => {
                 _refreshHost();
-                const socketUrl = `http://${host}:3000/socket.io/socket.io.js`;
+                // In production (Vercel → Render), use the Render URL directly
+                let socketBase;
+                if (window.KISAAN_RENDER_URL && window.KISAAN_RENDER_URL.startsWith('https://')) {
+                    socketBase = window.KISAAN_RENDER_URL.replace(/\/$/, '');
+                } else {
+                    socketBase = `http://${host}:3000`;
+                }
+                const socketUrl = `${socketBase}/socket.io/socket.io.js`;
                 const script = document.createElement('script');
                 script.src = socketUrl;
                 script.onload = resolve;
@@ -1397,7 +1406,13 @@
 
             // Socket setup for real-time quote notifications
             if (typeof io !== 'undefined') {
-                const socket = io(`http://${host}:3000`);
+                let socketBase;
+                if (window.KISAAN_RENDER_URL && window.KISAAN_RENDER_URL.startsWith('https://')) {
+                    socketBase = window.KISAAN_RENDER_URL.replace(/\/$/, '');
+                } else {
+                    socketBase = `http://${host}:3000`;
+                }
+                const socket = io(socketBase);
                 socket.emit('join', currentUser.id);
                 socket.on('quote_accepted', (data) => {
                     const acceptedQuote = quotes.find(q => q.id == data.id);
@@ -2577,7 +2592,13 @@
 
         function initSocket() {
             if (typeof io === 'undefined') return;
-            const socket = io(`http://${host}:3000`);
+            let socketBase;
+            if (window.KISAAN_RENDER_URL && window.KISAAN_RENDER_URL.startsWith('https://')) {
+                socketBase = window.KISAAN_RENDER_URL.replace(/\/$/, '');
+            } else {
+                socketBase = `http://${host}:3000`;
+            }
+            const socket = io(socketBase);
             // Custom listeners can go here
         }
         setInterval(checkServer, 10000);
