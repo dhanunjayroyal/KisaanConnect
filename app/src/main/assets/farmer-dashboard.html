@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- ✅ Production env config: sets KISAAN_RENDER_URL for Vercel → Render routing -->
+    <script src="env-config.js"></script>
     <!-- ✅ Network utility: auto-discovers server IP, handles Android/PWA/Browser -->
     <script src="kisaan-network.js"></script>
     <script>
@@ -27,7 +29,15 @@
         function loadSocketScript() {
             return new Promise((resolve) => {
                 _refreshHost();
-                const socketUrl = `http://${host}:3000/socket.io/socket.io.js`;
+                // In production (Vercel → Render), use the Render URL directly
+                // In LAN mode, use the auto-discovered host IP
+                let socketBase;
+                if (window.KISAAN_RENDER_URL && window.KISAAN_RENDER_URL.startsWith('https://')) {
+                    socketBase = window.KISAAN_RENDER_URL.replace(/\/$/, '');
+                } else {
+                    socketBase = `http://${host}:3000`;
+                }
+                const socketUrl = `${socketBase}/socket.io/socket.io.js`;
                 const script = document.createElement('script');
                 script.src = socketUrl;
                 script.onload = resolve;
@@ -1800,7 +1810,13 @@
 
         function initSocket() {
             if (typeof io === 'undefined') return;
-            const socket = io(`http://${host}:3000`);
+            let socketBase;
+            if (window.KISAAN_RENDER_URL && window.KISAAN_RENDER_URL.startsWith('https://')) {
+                socketBase = window.KISAAN_RENDER_URL.replace(/\/$/, '');
+            } else {
+                socketBase = `http://${host}:3000`;
+            }
+            const socket = io(socketBase);
             socket.emit('join', currentUser.id);
 
             socket.on('new_quote', (data) => {
