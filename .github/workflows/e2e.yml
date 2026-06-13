@@ -1,4 +1,4 @@
-name: Opt-in Node.js 24 for JavaScript Actions
+name: E2E Tests
 
 on:
   workflow_dispatch:
@@ -6,15 +6,11 @@ on:
     branches: [ main ]
   pull_request:
 
-# This workflow sets FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true at workflow level
-# which forces JavaScript actions to run on Node.js 24 on the runner.
-# Use this to opt in now and avoid deprecation warnings when Node.js 20 is removed.
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  ci:
+  e2e:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
