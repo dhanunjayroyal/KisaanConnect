@@ -127,6 +127,10 @@ class MainActivity : AppCompatActivity() {
             @JavascriptInterface
             fun getServerUrl(): String = ""
 
+            /** Exposes the device's local Wi-Fi IP to allow scanning its subnet */
+            @JavascriptInterface
+            fun getDeviceIp(): String = getDeviceIpAddress()
+
             /** Launches the native Google account picker */
             @JavascriptInterface
             fun launchGoogleSignIn() {
@@ -183,5 +187,27 @@ class MainActivity : AppCompatActivity() {
         val safe = message.replace("'", "\\'")
         val script = "javascript:onNativeGoogleSignInError('$safe')"
         webView.evaluateJavascript(script, null)
+    }
+
+    private fun getDeviceIpAddress(): String {
+        try {
+            val interfaces = java.net.NetworkInterface.getNetworkInterfaces()
+            while (interfaces.hasMoreElements()) {
+                val networkInterface = interfaces.nextElement()
+                val addresses = networkInterface.inetAddresses
+                while (addresses.hasMoreElements()) {
+                    val address = addresses.nextElement()
+                    if (!address.isLoopbackAddress) {
+                        val host = address.hostAddress ?: ""
+                        if (!host.contains(":")) { // IPv4 check
+                            return host
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Network", "Error getting device IP", e)
+        }
+        return ""
     }
 }

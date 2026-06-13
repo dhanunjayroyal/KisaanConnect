@@ -161,6 +161,16 @@
                 const s = extractSubnet(global.Android.getServerUrl());
                 if (s) subnetSet.add(s);
             }
+            if (global.Android && typeof global.Android.getDeviceIp === 'function') {
+                const devIp = global.Android.getDeviceIp();
+                if (devIp) {
+                    const s = extractSubnet(devIp);
+                    if (s) {
+                        subnetSet.add(s);
+                        console.log(`[KisaanNetwork] Added dynamic device subnet: ${s}`);
+                    }
+                }
+            }
         } catch (e) { /* ignore */ }
 
         // ⑤ Standard LAN subnets (covers home routers, hotspots, enterprise)
@@ -182,6 +192,7 @@
         subnetSet.add('10.10.10.');
         subnetSet.add('10.100.100.');
         subnetSet.add('10.200.200.');
+        subnetSet.add('10.117.116.'); // User local Wi-Fi subnet
 
         // Corporate / Docker / iPhone hotspot
         subnetSet.add('172.16.0.');
