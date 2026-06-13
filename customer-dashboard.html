@@ -182,7 +182,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 16px 14px 88px;
         }
 
         .search-bar {
@@ -328,43 +328,49 @@
 
         .tab-bar {
             position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 0;
+            left: 0;
+            right: 0;
+            transform: none;
             background: var(--glass);
             backdrop-filter: blur(32px) saturate(200%);
             -webkit-backdrop-filter: blur(32px) saturate(200%);
-            border-radius: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0;
+            border: none;
+            border-top: 1px solid var(--border);
             display: flex;
-            gap: 10px;
-            padding: 10px 25px;
+            justify-content: space-around;
+            gap: 0;
+            padding: 8px 0 env(safe-area-inset-bottom, 8px);
             z-index: 1000;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-            width: max-content;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
         }
 
         .tab-btn {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
-            padding: 12px 20px;
+            justify-content: center;
+            gap: 4px;
+            padding: 8px 14px;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 700;
             cursor: pointer;
-            border-radius: 20px;
+            border-radius: 12px;
+            flex: 1;
+            min-width: 0;
         }
 
         .tab-btn.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 10px 20px var(--primary-glow);
+            color: var(--primary);
+            background: rgba(5,150,105,0.1);
         }
 
         .tab-btn i {
-            font-size: 22px;
+            font-size: 20px;
         }
 
         .section {
