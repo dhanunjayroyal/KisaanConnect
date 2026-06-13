@@ -1767,15 +1767,7 @@ catch (error) {
             init();
 
             // Pre-initialize Google GSI for better reliability
-            if (window.google && window.google.accounts) {
-                google.accounts.id.initialize({
-                    client_id: GOOGLE_CLIENT_ID,
-                    callback: handleGoogleCredential,
-                    auto_select: false
-                });
-                // Show One Tap prompt immediately on load
-                google.accounts.id.prompt();
-            }
+            _initGSI();
         };
 
 
@@ -1883,40 +1875,21 @@ catch (error) {
             showGoogleRoleModal(payload);
         }
 
-        function handleGoogleSignIn() {
-            var btn = document.getElementById('google-signin-btn');
-            var spinner = document.getElementById('google-btn-spinner');
-            var icon    = document.getElementById('google-btn-icon');
-            var text    = document.getElementById('google-btn-text');
-
-            if (!window.google || !window.google.accounts) {
-                alert('Google Sign-In is still loading. Please wait a moment and try again.');
-                return;
+        function _renderGoogleButton() {
+            if (window.google && window.google.accounts) {
+                const btn = document.getElementById('google-signin-btn');
+                if (btn) {
+                    btn.innerHTML = '';
+                    google.accounts.id.renderButton(btn, {
+                        theme:          'outline',
+                        size:           'large',
+                        width:          btn.offsetWidth || 380,
+                        text:           'signin_with',
+                        shape:          'rectangular',
+                        logo_alignment: 'left',
+                    });
+                }
             }
-
-            // Always re-initialize
-            google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                callback: handleGoogleCredential,
-                auto_select: false,
-            });
-
-            // For the web version, we'll use the standard renderButton flow
-            // which is less likely to be blocked or suppressed than One Tap.
-            btn.innerHTML = '';
-            btn.style.cssText = 'width:100%;padding:0;background:transparent;border:none;box-shadow:none;overflow:visible;border-radius:0;display:flex;justify-content:center;';
-
-            google.accounts.id.renderButton(btn, {
-                theme:          'outline',
-                size:           'large',
-                width:          btn.offsetWidth || 380,
-                text:           'signin_with',
-                shape:          'rectangular',
-                logo_alignment: 'left',
-            });
-
-            // Trigger the chooser immediately
-            google.accounts.id.prompt();
         }
 
         function showGoogleRoleModal(payload) {
@@ -1939,10 +1912,10 @@ catch (error) {
             const spinner = document.getElementById('google-btn-spinner');
             const icon    = document.getElementById('google-btn-icon');
             const text    = document.getElementById('google-btn-text');
-            spinner.style.display = 'block';
-            icon.style.display    = 'none';
-            text.textContent      = 'Signing in…';
-            btn.disabled          = true;
+            if (spinner) spinner.style.display = 'block';
+            if (icon) icon.style.display    = 'none';
+            if (text) text.textContent      = 'Signing in…';
+            if (btn) btn.disabled          = true;
 
             try {
                 const res = await fetch(`${API_URL}/google-auth`, {
@@ -1968,10 +1941,10 @@ catch (error) {
                 console.error('Google auth error:', e);
                 alert('Could not connect to server. Please check your connection.');
             } finally {
-                spinner.style.display = 'none';
-                icon.style.display    = '';
-                text.textContent      = 'Sign in with Google';
-                btn.disabled          = false;
+                if (spinner) spinner.style.display = 'none';
+                if (icon) icon.style.display    = '';
+                if (text) text.textContent      = 'Sign in with Google';
+                if (btn) btn.disabled          = false;
             }
         }
 
@@ -1982,6 +1955,14 @@ catch (error) {
                     client_id: GOOGLE_CLIENT_ID,
                     callback: handleGoogleCredential,
                     auto_select: false,
+                    use_fedcm_for_prompt: true
+                });
+                _renderGoogleButton();
+                // Show One Tap prompt optionally/silently
+                google.accounts.id.prompt((notification) => {
+                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                        console.log('[GSI] One Tap prompt not displayed or skipped:', notification.getMomentType());
+                    }
                 });
             }
         }
