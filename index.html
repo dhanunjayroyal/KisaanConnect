@@ -829,7 +829,7 @@
                     <i class="fas fa-eye eye-icon" id="togglePassword" onclick="togglePasswordVisibility()"></i>
                 </div>
 
-                <div style="text-align: right; margin-top: -5px; margin-bottom: 15px;">
+                <div style="text-align: right; margin-top: -5px; margin-bottom: 15px;" id="forgot-password-wrapper">
                     <a href="#" onclick="showForgotPassword(); return false;" style="color: var(--primary); font-size: 13px; text-decoration: none;" id="forgot-link">Forgot Password?</a>
                 </div>
 
@@ -1192,6 +1192,15 @@
             document.getElementById('auth-btn').textContent = isSignup ? getT('signup') : getT('login');
             document.getElementById('toggle-text-hint').textContent = isSignup ? getT('hasAcc') : getT('noAcc');
             document.getElementById('toggle-link-text').textContent = isSignup ? getT('loginLink') : getT('signupLink');
+
+            const forgotWrapper = document.getElementById('forgot-password-wrapper');
+            if (forgotWrapper) {
+                if (isSignup) {
+                    forgotWrapper.classList.add('hidden');
+                } else {
+                    forgotWrapper.classList.remove('hidden');
+                }
+            }
         }
 
         function toggleTheme() {
@@ -1625,7 +1634,45 @@
 
             try {
                 if (isSignup) {
-                    // ... (existing signup logic)
+                    const name = document.getElementById('fullName').value.trim();
+                    const mobile = document.getElementById('mobile').value.trim();
+                    const location = document.getElementById('location').value.trim();
+
+                    if (!name || !mobile || !location) {
+                        alert(getT('err_fields'));
+                        return;
+                    }
+                    if (name.length < 2 || mobile.length !== 10) {
+                        alert(getT('err_name_mobile'));
+                        return;
+                    }
+
+                    const response = await fetch(`${API_URL}/signup`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name,
+                            email,
+                            password,
+                            role: currentRole,
+                            mobile,
+                            location
+                        }),
+                        signal: controller.signal
+                    });
+
+                    if (response.ok) {
+                        const user = await response.json();
+                        showLoginAfterSignup('Account created successfully! Please login.');
+                    } else {
+                        const text = await response.text();
+                        try {
+                            const json = JSON.parse(text);
+                            alert(json.message || 'Signup failed.');
+                        } catch(e) {
+                            alert('Signup failed: ' + text);
+                        }
+                    }
                 } else {
                     const response = await fetch(`${API_URL}/login`, {
                         method: 'POST',
