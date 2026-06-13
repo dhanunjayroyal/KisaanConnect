@@ -1645,6 +1645,15 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
             btn.disabled = true;
 
+            // Ensure network discovery has completed before attempting login
+            try { await ensureNetworkReady(); } catch(e) {}
+
+            // Check if server was found
+            if (!API_URL || API_URL.includes('localhost')) {
+                // Last chance — try to get latest resolved URL
+                API_URL = window.API_URL || API_URL;
+            }
+
             // 10-second timeout to prevent hanging
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -1775,17 +1784,32 @@ catch (error) {
         });
 
         // ── Network: run smart auto-discovery on page load ──
+        let _networkReady = false;
+        let _networkInitPromise = null;
+
         window.onload = function() {
-            KisaanNetwork.init().then(url => {
+            // Start network discovery immediately
+            _networkInitPromise = KisaanNetwork.init().then(url => {
                 API_URL = url;
-                // Start the auto-reconnect watchdog AFTER first successful init
+                _networkReady = true;
                 KisaanNetwork.startWatchdog();
+                console.log('[App] Network ready:', API_URL);
             });
             init();
-
-            // Pre-initialize Google GSI for better reliability
             _initGSI();
         };
+
+        // Ensure API_URL is always the latest resolved URL before any fetch
+        async function ensureNetworkReady() {
+            if (_networkReady) {
+                API_URL = window.API_URL || API_URL;
+                return;
+            }
+            if (_networkInitPromise) {
+                await _networkInitPromise;
+                API_URL = window.API_URL || API_URL;
+            }
+        }
 
 
         // QR CODE POPUP — generates URL using actual discovered server IP

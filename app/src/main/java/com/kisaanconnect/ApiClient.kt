@@ -1,24 +1,16 @@
 package com.kisaanconnect
 
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-
+/**
+ * ApiClient — KisaanConnect
+ *
+ * The Android app is a WebView shell. All server communication is handled
+ * by kisaan-network.js inside the WebView (LAN auto-discovery + tunnel support).
+ *
+ * This object exists as a placeholder for any future native Retrofit calls.
+ * getServerUrl() intentionally returns "" so that kisaan-network.js takes
+ * full control of server resolution — no hardcoded IP is needed.
+ */
 object ApiClient {
-    // ✅ UPDATED: Current Wi-Fi IP for this network (10.117.116.11)
-    // If the server moves to a different IP, update this value and rebuild.
-    // The WebView kisaan-network.js auto-discovers the IP dynamically,
-    // but Retrofit (used for native API calls) needs a fixed base URL.
-    const val BASE_URL = "http://10.117.116.11:3000/"
-
-    private var retrofit: Retrofit? = null
-
-    fun getClient(): Retrofit {
-        if (retrofit == null) {
-            retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        }
-        return retrofit!!
-    }
+    // Empty → kisaan-network.js will auto-discover the server via LAN scan
+    const val BASE_URL = ""
 }
