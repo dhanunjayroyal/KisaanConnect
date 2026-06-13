@@ -373,6 +373,134 @@
             font-size: 20px;
         }
 
+        .mobile-more-btn {
+            display: none !important;
+        }
+
+        /* ── MOBILE MORE SHEET ── */
+        .more-sheet-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 99999;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .more-sheet-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .more-sheet-content {
+            background: var(--bg);
+            width: 100%;
+            max-width: 480px;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 12px));
+            box-shadow: 0 -8px 32px rgba(0,0,0,0.12);
+            transform: translateY(100%);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .more-sheet-overlay.active .more-sheet-content {
+            transform: translateY(0);
+        }
+        .more-sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .more-sheet-drag-handle {
+            width: 36px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .more-sheet-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+        }
+        .more-sheet-close {
+            background: var(--border);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .more-sheet-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .more-sheet-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            padding: 10px 6px;
+            border-radius: 12px;
+            transition: background 0.15s ease;
+        }
+        .more-sheet-item:active {
+            background: rgba(5, 150, 105, 0.08);
+        }
+        .more-icon-wrapper {
+            width: 44px;
+            height: 44px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            color: var(--primary);
+            font-size: 18px;
+        }
+        .more-sheet-item span {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        @media (max-width: 768px) {
+            [data-hidden-mobile] {
+                display: none !important;
+            }
+            .mobile-more-btn {
+                display: flex !important;
+            }
+            .tab-bar {
+                height: 60px !important;
+                padding: 4px 6px !important;
+                background: var(--card-bg) !important;
+            }
+            .tab-btn {
+                padding: 6px 10px !important;
+            }
+            .tab-btn i {
+                font-size: 18px !important;
+            }
+        }
+
         .section {
             display: none;
         }
@@ -1173,12 +1301,13 @@
         <a class="tab-btn" onclick="switchSection('orders')"><i
                 class="fas fa-clipboard-list"></i><span>Orders</span></a>
         <a class="tab-btn" onclick="switchSection('wishlist')"><i class="fas fa-heart"></i><span>Wishlist</span></a>
-        <a class="tab-btn" onclick="switchSection('community')"><i class="fas fa-users"></i><span>Board</span></a>
-        <a class="tab-btn" onclick="switchSection('subs')"><i class="fas fa-sync-alt"></i><span>Subs</span></a>
-        <a class="tab-btn" onclick="switchSection('calendar')"><i
+        <a class="tab-btn" onclick="switchSection('community')" data-hidden-mobile><i class="fas fa-users"></i><span>Board</span></a>
+        <a class="tab-btn" onclick="switchSection('subs')" data-hidden-mobile><i class="fas fa-sync-alt"></i><span>Subs</span></a>
+        <a class="tab-btn" onclick="switchSection('calendar')" data-hidden-mobile><i
                 class="fas fa-calendar-alt"></i><span>Planner</span></a>
-        <a class="tab-btn" onclick="switchSection('payments')"><i class="fas fa-wallet"></i><span>Payments</span></a>
+        <a class="tab-btn" onclick="switchSection('payments')" data-hidden-mobile><i class="fas fa-wallet"></i><span>Payments</span></a>
         <a class="tab-btn" onclick="switchSection('profile')"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+        <a class="tab-btn mobile-more-btn" onclick="openMoreSheet()"><i class="fas fa-ellipsis-h"></i><span>More</span></a>
     </nav>
 
     <!-- QUOTE MODAL -->
@@ -1535,9 +1664,22 @@
 
             // Fix: find the correct button to activate
             const btns = document.querySelectorAll('.tab-btn');
+            let activated = false;
             btns.forEach(btn => {
-                if (btn.onclick.toString().includes(id)) btn.classList.add('active');
+                if (btn.onclick && btn.onclick.toString().includes(id)) {
+                    if (window.getComputedStyle(btn).display !== 'none') {
+                        btn.classList.add('active');
+                        activated = true;
+                    }
+                }
             });
+            if (!activated) {
+                // If it is hidden in mobile view, highlight the More button instead
+                const moreBtn = document.querySelector('.mobile-more-btn');
+                if (moreBtn && window.innerWidth <= 768) {
+                    moreBtn.classList.add('active');
+                }
+            }
 
             if (id === 'profile') loadProfile();
             if (id === 'payments') loadCustomerPayments();
@@ -2746,7 +2888,68 @@
             }, 20000);
         };
 
-    </script>
-</body>
+        // ── Mobile More Bottom Sheet Controls ──
+        function openMoreSheet() {
+            const overlay = document.getElementById('mobile-more-sheet');
+            if (!overlay) return;
+            overlay.style.display = 'flex';
+            void overlay.offsetWidth;
+            overlay.classList.add('active');
+        }
 
+        function closeMoreSheet(event) {
+            const overlay = document.getElementById('mobile-more-sheet');
+            if (!overlay) return;
+            if (event && event.target !== overlay && !event.target.closest('.more-sheet-close')) {
+                return;
+            }
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 250);
+        }
+
+        function selectMoreSection(sectionId) {
+            closeMoreSheet();
+            switchSection(sectionId);
+        }
+    </script>
+
+    <!-- Beautiful Bottom Sheet for Mobile "More" Menu -->
+    <div id="mobile-more-sheet" class="more-sheet-overlay" onclick="closeMoreSheet(event)">
+        <div class="more-sheet-content">
+            <div class="more-sheet-header">
+                <div class="more-sheet-drag-handle"></div>
+                <h3>All Features</h3>
+                <button class="more-sheet-close" onclick="closeMoreSheet()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="more-sheet-grid">
+                <div class="more-sheet-item" onclick="selectMoreSection('community')">
+                    <div class="more-icon-wrapper"><i class="fas fa-users"></i></div>
+                    <span>Board</span>
+                </div>
+                <div class="more-sheet-item" onclick="selectMoreSection('subs')">
+                    <div class="more-icon-wrapper"><i class="fas fa-sync-alt"></i></div>
+                    <span>Subscriptions</span>
+                </div>
+                <div class="more-sheet-item" onclick="selectMoreSection('calendar')">
+                    <div class="more-icon-wrapper"><i class="fas fa-calendar-alt"></i></div>
+                    <span>Planner</span>
+                </div>
+                <div class="more-sheet-item" onclick="selectMoreSection('payments')">
+                    <div class="more-icon-wrapper"><i class="fas fa-wallet"></i></div>
+                    <span>Payments</span>
+                </div>
+                <div class="more-sheet-item" onclick="selectMoreSection('profile')">
+                    <div class="more-icon-wrapper"><i class="fas fa-user-circle"></i></div>
+                    <span>Profile</span>
+                </div>
+                <div class="more-sheet-item" onclick="closeMoreSheet(); shareApp();">
+                    <div class="more-icon-wrapper" style="border: 1px dashed var(--primary);"><i class="fas fa-share-nodes" style="color:var(--primary)"></i></div>
+                    <span style="color:var(--primary)">Share App</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
