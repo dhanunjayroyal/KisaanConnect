@@ -1,4 +1,4 @@
-name: E2E Tests
+name: KisaanConnect E2E Tests
 
 on:
   workflow_dispatch:
