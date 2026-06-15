@@ -10,6 +10,7 @@ node_modules/
 *.apk
 *.aab
 build/
+dist/
 .gradle/
 .gradle_home/
 .gradle_tmp/

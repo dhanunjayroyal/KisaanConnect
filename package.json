@@ -12,7 +12,7 @@
     "tunnel": "node start-tunnel.js",
     "build": "node build-env.js",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d dist",
     "test": "node test_all_apis.js"
   },
   "dependencies": {
