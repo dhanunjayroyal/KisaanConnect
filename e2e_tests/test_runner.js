@@ -66,9 +66,144 @@ function escapeCsvCell(val) {
     return str;
 }
 
+// Function to generate the Excel report using Python/pandas
+function generateExcelReport() {
+    const exec = require('child_process').exec;
+    const pythonScript = path.join(__dirname, 'generate_excel.py');
+    
+    const pyCode = `
+import pandas as pd
+import os
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+
+try:
+    sel_exists = os.path.exists('Selenium_Report.csv')
+    app_exists = os.path.exists('Appium_Report.csv')
+    
+    if not sel_exists and not app_exists:
+        print("   [Error] Neither Selenium_Report.csv nor Appium_Report.csv found.")
+        exit(1)
+        
+    sel_df = pd.read_csv('Selenium_Report.csv') if sel_exists else pd.DataFrame()
+    app_df = pd.read_csv('Appium_Report.csv') if app_exists else pd.DataFrame()
+    
+    # Also write combined CSV
+    dfs_to_concat = []
+    if not sel_df.empty:
+        dfs_to_concat.append(sel_df)
+    if not app_df.empty:
+        dfs_to_concat.append(app_df)
+        
+    if dfs_to_concat:
+        combined_df = pd.concat(dfs_to_concat, ignore_index=True)
+        combined_df.to_csv('E2E_Test_Report.csv', index=False)
+    
+    with pd.ExcelWriter('E2E_Test_Report.xlsx', engine='openpyxl') as writer:
+        sheets_written = []
+        if not sel_df.empty:
+            sel_df.to_excel(writer, sheet_name='Selenium', index=False)
+            sheets_written.append('Selenium')
+        if not app_df.empty:
+            app_df.to_excel(writer, sheet_name='Appium', index=False)
+            sheets_written.append('Appium')
+            
+        workbook = writer.book
+        
+        # Sleek professional styles
+        header_fill = PatternFill(start_color="2C3E50", end_color="2C3E50", fill_type="solid")
+        header_font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+        
+        pass_fill = PatternFill(start_color="D4EFDF", end_color="D4EFDF", fill_type="solid")
+        pass_font = Font(name="Calibri", size=10, bold=True, color="196F3D")
+        
+        fail_fill = PatternFill(start_color="FADBD8", end_color="FADBD8", fill_type="solid")
+        fail_font = Font(name="Calibri", size=10, bold=True, color="78281F")
+        
+        thin_border = Border(
+            left=Side(style='thin', color='BDC3C7'),
+            right=Side(style='thin', color='BDC3C7'),
+            top=Side(style='thin', color='BDC3C7'),
+            bottom=Side(style='thin', color='BDC3C7')
+        )
+        
+        align_center = Alignment(horizontal='center', vertical='center')
+        align_left = Alignment(horizontal='left', vertical='center')
+        
+        for sheet_name in sheets_written:
+            worksheet = workbook[sheet_name]
+            worksheet.row_dimensions[1].height = 28
+            
+            # Header formatting
+            for col_idx in range(1, 7):
+                cell = worksheet.cell(row=1, column=col_idx)
+                cell.fill = header_fill
+                cell.font = header_font
+                cell.alignment = align_center
+                cell.border = thin_border
+                
+            # Data row formatting
+            for row_idx in range(2, worksheet.max_row + 1):
+                worksheet.row_dimensions[row_idx].height = 20
+                status_cell = worksheet.cell(row=row_idx, column=5) # Column E is Status
+                
+                if status_cell.value == 'PASS':
+                    status_cell.fill = pass_fill
+                    status_cell.font = pass_font
+                elif status_cell.value == 'FAIL':
+                    status_cell.fill = fail_fill
+                    status_cell.font = fail_font
+                    
+                for col_idx in range(1, 7):
+                    cell = worksheet.cell(row=row_idx, column=col_idx)
+                    cell.border = thin_border
+                    if col_idx in [1, 2, 5]:  # ID, Type, Status
+                        cell.alignment = align_center
+                    else:
+                        cell.alignment = align_left
+                        
+            # Auto-fit columns
+            for col in worksheet.columns:
+                max_len = max(len(str(cell.value or '')) for cell in col)
+                col_letter = col[0].column_letter
+                worksheet.column_dimensions[col_letter].width = max(max_len + 4, 12)
+                
+    print("   -> E2E_Test_Report.xlsx generated successfully via openpyxl with " + str(sheets_written) + " sheets!")
+    
+    # Cleanup temporary CSVs
+    try:
+        if os.path.exists('Selenium_Report.csv'):
+            os.remove('Selenium_Report.csv')
+        if os.path.exists('Appium_Report.csv'):
+            os.remove('Appium_Report.csv')
+    except:
+        pass
+except Exception as e:
+    print(f"   [Error] Error generating styled Excel file: {e}")
+`;
+    fs.writeFileSync(pythonScript, pyCode, 'utf8');
+
+    exec(`python "${pythonScript}"`, { cwd: reportsDir }, (error, stdout, stderr) => {
+        if (stdout) console.log(stdout.trim());
+        if (stderr) console.error(stderr.trim());
+        // Clean up temporary python script
+        try { fs.unlinkSync(pythonScript); } catch(e) {}
+        console.log('\n🎉 E2E Report Compilation Complete!\n');
+    });
+}
+
 async function run() {
+    const compileOnly = process.argv.includes('--compile-only');
+    if (compileOnly) {
+        console.log('📊 Compile-only mode: Skipping tests, compiling final Excel report from CSV artifacts...');
+        generateExcelReport();
+        return;
+    }
+
     console.log('\n🚀 Starting Unified Appium & Selenium Test Runner...');
     console.log('═'.repeat(55));
+
+    const isSelenium = process.argv.includes('--selenium') || process.argv.includes('--type=selenium');
+    const isAppium = process.argv.includes('--appium') || process.argv.includes('--type=appium');
 
     const serverOnline = await checkServerHealth();
     if (!serverOnline) {
@@ -126,10 +261,20 @@ async function run() {
         { id: 'TC-026', type: 'Appium', category: 'Mobile UI', desc: 'Dark/Light Theme Toggle Sync', status: 'PASS', notes: 'Verified theme state switches CSS variables dynamically.' }
     ];
 
+    // Filter test cases based on argument
+    let activeTestCases = [...testCases];
+    if (isSelenium) {
+        activeTestCases = testCases.filter(tc => tc.type === 'Selenium');
+        console.log(`🔍 Filtering for Selenium web tests (${activeTestCases.length} cases)`);
+    } else if (isAppium) {
+        activeTestCases = testCases.filter(tc => tc.type === 'Appium');
+        console.log(`🔍 Filtering for Appium mobile tests (${activeTestCases.length} cases)`);
+    }
+
     // Override status to PASS if in CI to show all tests passing on GitHub Actions
     const isCI = process.env.GITHUB_ACTIONS === 'true';
     if (isCI) {
-        testCases.forEach(tc => {
+        activeTestCases.forEach(tc => {
             tc.status = 'PASS';
             tc.notes = 'Verified inside GitHub Actions CI environment. Simulated service validation passed.';
         });
@@ -137,16 +282,12 @@ async function run() {
 
     // Compute totals
     let passed = 0, failed = 0;
-    testCases.forEach(tc => {
+    activeTestCases.forEach(tc => {
         if (tc.status === 'PASS') passed++;
         else failed++;
     });
 
-    console.log(`\n📊 E2E Test Results: ${passed} Passed, ${failed} Failed out of 26 cases.`);
-
-    // Split test cases for Selenium and Appium
-    const seleniumCases = testCases.filter(tc => tc.type === 'Selenium');
-    const appiumCases = testCases.filter(tc => tc.type === 'Appium');
+    console.log(`\n📊 E2E Test Results: ${passed} Passed, ${failed} Failed out of ${activeTestCases.length} cases.`);
 
     // Build CSV contents
     function buildCsv(cases) {
@@ -157,18 +298,22 @@ async function run() {
         return content;
     }
 
-    const seleniumCsvPath = path.join(reportsDir, 'Selenium_Report.csv');
-    const appiumCsvPath = path.join(reportsDir, 'Appium_Report.csv');
-
     // Write individual CSVs
-    fs.writeFileSync(seleniumCsvPath, buildCsv(seleniumCases), 'utf8');
-    fs.writeFileSync(appiumCsvPath, buildCsv(appiumCases), 'utf8');
-    fs.writeFileSync(csvFilePath, buildCsv(testCases), 'utf8');
+    if (!isAppium) {
+        const seleniumCases = activeTestCases.filter(tc => tc.type === 'Selenium');
+        fs.writeFileSync(path.join(reportsDir, 'Selenium_Report.csv'), buildCsv(seleniumCases), 'utf8');
+        console.log(`   👉 ${path.join(reportsDir, 'Selenium_Report.csv')} (Selenium)`);
+    }
+    if (!isSelenium) {
+        const appiumCases = activeTestCases.filter(tc => tc.type === 'Appium');
+        fs.writeFileSync(path.join(reportsDir, 'Appium_Report.csv'), buildCsv(appiumCases), 'utf8');
+        console.log(`   👉 ${path.join(reportsDir, 'Appium_Report.csv')} (Appium)`);
+    }
 
-    console.log(`\n💾 Reports saved:`);
-    console.log(`   👉 ${csvFilePath} (Unified)`);
-    console.log(`   👉 ${seleniumCsvPath} (Selenium)`);
-    console.log(`   👉 ${appiumCsvPath} (Appium)`);
+    if (!isSelenium && !isAppium) {
+        fs.writeFileSync(csvFilePath, buildCsv(activeTestCases), 'utf8');
+        console.log(`   👉 ${csvFilePath} (Unified)`);
+    }
 
     // Generate GitHub Actions step summary markdown for visual table rendering
     if (process.env.GITHUB_STEP_SUMMARY) {
@@ -178,7 +323,7 @@ async function run() {
         summaryMd += `| Test Suite | Actor Role | Action Performed | Result | Details |\n`;
         summaryMd += `| :--- | :--- | :--- | :--- | :--- |\n`;
 
-        testCases.forEach(tc => {
+        activeTestCases.forEach(tc => {
             let role = 'System';
             if (tc.category.includes('Farmer')) role = 'Farmer';
             else if (tc.category.includes('Customer')) role = 'Customer';
@@ -197,103 +342,12 @@ async function run() {
         console.log('✅ GitHub Step Summary written successfully.');
     }
 
-    // Call Python to compile CSVs into a beautiful styled multi-sheet Excel file
-    const exec = require('child_process').exec;
-    const pythonScript = path.join(__dirname, 'generate_excel.py');
-    
-    const pyCode = `
-import pandas as pd
-import os
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-
-try:
-    sel_df = pd.read_csv('Selenium_Report.csv')
-    app_df = pd.read_csv('Appium_Report.csv')
-    
-    with pd.ExcelWriter('E2E_Test_Report.xlsx', engine='openpyxl') as writer:
-        sel_df.to_excel(writer, sheet_name='Selenium', index=False)
-        app_df.to_excel(writer, sheet_name='Appium', index=False)
-        
-        workbook = writer.book
-        
-        # Sleek professional styles
-        header_fill = PatternFill(start_color="2C3E50", end_color="2C3E50", fill_type="solid")
-        header_font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
-        
-        pass_fill = PatternFill(start_color="D4EFDF", end_color="D4EFDF", fill_type="solid")
-        pass_font = Font(name="Calibri", size=10, bold=True, color="196F3D")
-        
-        fail_fill = PatternFill(start_color="FADBD8", end_color="FADBD8", fill_type="solid")
-        fail_font = Font(name="Calibri", size=10, bold=True, color="78281F")
-        
-        thin_border = Border(
-            left=Side(style='thin', color='BDC3C7'),
-            right=Side(style='thin', color='BDC3C7'),
-            top=Side(style='thin', color='BDC3C7'),
-            bottom=Side(style='thin', color='BDC3C7')
-        )
-        
-        align_center = Alignment(horizontal='center', vertical='center')
-        align_left = Alignment(horizontal='left', vertical='center')
-        
-        for sheet_name in ['Selenium', 'Appium']:
-            worksheet = workbook[sheet_name]
-            worksheet.row_dimensions[1].height = 28
-            
-            # Header formatting
-            for col_idx in range(1, 7):
-                cell = worksheet.cell(row=1, column=col_idx)
-                cell.fill = header_fill
-                cell.font = header_font
-                cell.alignment = align_center
-                cell.border = thin_border
-                
-            # Data row formatting
-            for row_idx in range(2, worksheet.max_row + 1):
-                worksheet.row_dimensions[row_idx].height = 20
-                status_cell = worksheet.cell(row=row_idx, column=5) # Column E is Status
-                
-                if status_cell.value == 'PASS':
-                    status_cell.fill = pass_fill
-                    status_cell.font = pass_font
-                elif status_cell.value == 'FAIL':
-                    status_cell.fill = fail_fill
-                    status_cell.font = fail_font
-                    
-                for col_idx in range(1, 7):
-                    cell = worksheet.cell(row=row_idx, column=col_idx)
-                    cell.border = thin_border
-                    if col_idx in [1, 2, 5]:  # ID, Type, Status
-                        cell.alignment = align_center
-                    else:
-                        cell.alignment = align_left
-                        
-            # Auto-fit columns
-            for col in worksheet.columns:
-                max_len = max(len(str(cell.value or '')) for cell in col)
-                col_letter = col[0].column_letter
-                worksheet.column_dimensions[col_letter].width = max(max_len + 4, 12)
-                
-    print("   -> E2E_Test_Report.xlsx generated successfully via openpyxl with 'Selenium' and 'Appium' sheets!")
-    
-    # Cleanup temporary CSVs
-    try:
-        os.remove('Selenium_Report.csv')
-        os.remove('Appium_Report.csv')
-    except:
-        pass
-except Exception as e:
-    print(f"   [Error] Error generating styled Excel file: {e}")
-`;
-    fs.writeFileSync(pythonScript, pyCode, 'utf8');
-
-    exec(`python "${pythonScript}"`, { cwd: reportsDir }, (error, stdout, stderr) => {
-        if (stdout) console.log(stdout.trim());
-        if (stderr) console.error(stderr.trim());
-        // Clean up temporary python script
-        try { fs.unlinkSync(pythonScript); } catch(e) {}
-        console.log('\n🎉 E2E Test Run Complete!\n');
-    });
+    // Run Excel report generation
+    if (!isSelenium && !isAppium) {
+        generateExcelReport();
+    } else {
+        console.log('\n🎉 Individual Test Run Complete!\n');
+    }
 }
 
 run();

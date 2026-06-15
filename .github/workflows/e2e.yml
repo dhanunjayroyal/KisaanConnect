@@ -48,8 +48,75 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  e2e:
+  selenium-tests:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Start Server in Background
+        run: |
+          node server.js &
+          echo "Server started in background."
+
+      - name: Wait for Server Startup
+        run: sleep 3
+
+      - name: Run Selenium Tests
+        run: node e2e_tests/test_runner.js --type=selenium
+
+      - name: Upload Selenium CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-csv
+          path: e2e_tests/reports/Selenium_Report.csv
+          retention-days: 1
+
+  appium-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Start Server in Background
+        run: |
+          node server.js &
+          echo "Server started in background."
+
+      - name: Wait for Server Startup
+        run: sleep 3
+
+      - name: Run Appium Tests
+        run: node e2e_tests/test_runner.js --type=appium
+
+      - name: Upload Appium CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-csv
+          path: e2e_tests/reports/Appium_Report.csv
+          retention-days: 1
+
+  compile-and-deploy:
+    runs-on: ubuntu-latest
+    needs: [selenium-tests, appium-tests]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -57,10 +124,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Use Node.js (for job steps)
+      - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
           cache: 'npm'
 
       - name: Set up Python
@@ -71,37 +138,37 @@ jobs:
       - name: Install Python dependencies
         run: pip install pandas openpyxl
 
-      - name: Install Node dependencies
+      - name: Download Selenium CSV
+        uses: actions/download-artifact@v4
+        with:
+          name: selenium-csv
+          path: e2e_tests/reports/
+
+      - name: Download Appium CSV
+        uses: actions/download-artifact@v4
+        with:
+          name: appium-csv
+          path: e2e_tests/reports/
+
+      - name: Compile Excel E2E Report
+        run: node e2e_tests/test_runner.js --compile-only
+
+      - name: Install Node dependencies (for build)
         run: npm ci
 
-      - name: Build
+      - name: Run frontend packaging build
         run: npm run build
 
-      - name: Validate Server Syntax
-        run: node -c server.js
-
-      - name: Start KisaanConnect Server
-        run: node server.js &
-
-      - name: Wait for Server Startup
-        run: sleep 3
-
-      - name: Run E2E Test Runner
-        run: node e2e_tests/test_runner.js
+      - name: Copy report assets to dist for deployment hosting
+        run: |
+          cp e2e_tests/reports/E2E_Test_Report.xlsx dist/
+          cp e2e_tests/reports/E2E_Test_Report.csv dist/
 
       - name: Upload Excel E2E Report Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-excel-reports
-          path: e2e_tests/reports/
-          retention-days: 30
-
-      - name: Archive build
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: dist
+          name: e2e-excel-report
+          path: e2e_tests/reports/E2E_Test_Report.xlsx
           retention-days: 30
 
       - name: Setup Pages
