@@ -127,7 +127,7 @@ jobs:
 # JOB 3 — Unit Tests (30 cases)
 # ═══════════════════════════════════════════════════════════
   unit-tests:
-    name: "🔬 Unit Tests — API (30)"
+    name: "🔬 Unit Tests — API (50)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -170,7 +170,7 @@ jobs:
 # JOB 4 — Validation Tests (25 cases)
 # ═══════════════════════════════════════════════════════════
   validation-tests:
-    name: "✅ Validation Tests (25)"
+    name: "✅ Validation Tests (40)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
