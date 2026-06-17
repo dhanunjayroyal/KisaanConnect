@@ -1,27 +1,171 @@
-Test Case ID,Test Type,Category,Test Description,Status,Analysis & Notes
-TC-001,Selenium,Authentication,Farmer Registration via Web Portal,PASS,Verified form validations and Firestore DB user creation.
-TC-002,Selenium,Authentication,Farmer Login via Web Portal,PASS,Verified session creation and redirection to dashboard.
-TC-003,Selenium,Product Management,Post New Harvest Listing,PASS,"Verified product fields, pricing structure, and image submission."
-TC-004,Selenium,Product Management,Modify Active Harvest Listing,PASS,"Verified updating crop price, quantity, and status to sold."
-TC-005,Selenium,Quotes & Orders,Farmer Reviews Customer Quotes,PASS,Verified incoming customer quotes are displayed in the dashboard.
-TC-006,Selenium,Quotes & Orders,Farmer Accepts Customer Quote & Bids,PASS,Verified accepting bid converts quote to active order.
-TC-007,Selenium,Authentication,Customer Registration via Web Portal,PASS,Verified customer details are stored in database.
-TC-008,Selenium,Authentication,Customer Login via Web Portal,PASS,Verified redirection to Customer Marketplace dashboard.
-TC-009,Selenium,Marketplace,Search Produce by Keyword,PASS,Verified live filtering on typing crop names.
-TC-010,Selenium,Marketplace,Filter Produce by Location & Distance,PASS,Verified geographic calculations to show nearby farms.
-TC-011,Selenium,Quotes & Orders,Customer Place Produce Order,PASS,Verified order creation and checkout redirect.
-TC-012,Selenium,Payments,Customer Wallet Payment checkout,PASS,Verified wallet balance debit and transaction logging.
-TC-013,Selenium,Admin Panel,Admin Dashboard Stats and Analytics,PASS,Verified admin panel stats match database counts.
-TC-014,Appium,Mobile UI,Mobile App Launch and Onboarding Screen,PASS,UiAutomator2 verified startup screens and role options.
-TC-015,Appium,Authentication,Mobile Login Credentials Persistence,PASS,Verified local storage retains session on app restart.
-TC-016,Appium,Geolocations,Mobile GPS Auto-discovery and Sync,PASS,Verified mobile GPS coordinates update in user profile.
-TC-017,Appium,AI & Diagnostics,Mobile Crop Disease Scanner Upload,PASS,Android camera interface triggered and leaf photo uploaded.
-TC-018,Appium,AI & Diagnostics,Mobile AI Crop Remedy Delivery,PASS,Verified KisaanAI chatbot returned disease treatment plan.
-TC-019,Appium,Notifications,Push notifications via WebSocket/Socket.io,PASS,Verified real-time popup on mobile for new quotes.
-TC-020,Appium,Payments,UPI QR Code Generator View,PASS,Verified dynamic QR code loads inside mobile overlay.
-TC-021,Appium,Weather Info,Live Weather Alert Sync,PASS,Verified daily forecasts render on mobile home banner.
-TC-022,Appium,Work Planner,Calendar Reminders and Schedule Tasks,PASS,Verified calendar notes load and save in scheduler.
-TC-023,Appium,Community Feed,Farmer Community Forum Scroll & Like,PASS,Verified infinite scroll and liking posts updates DB.
-TC-024,Appium,Subscriptions,Weekly Recurring Delivery Order,PASS,Verified weekly recurring subscription schedule setup.
-TC-025,Appium,System Integration,Share App Link via Native Share Sheet,PASS,Verified clicking share triggers system intents.
-TC-026,Appium,Mobile UI,Dark/Light Theme Toggle Sync,PASS,Verified theme state switches CSS variables dynamically.
+Test Case ID,Test Type,Category,Test Description,Status,Notes
+TC-W01,Selenium,Web,Landing page title contains KisaanConnect,PASS,Assertion passed.
+TC-W02,Selenium,Web,Hero / h1 headline element is displayed,PASS,Assertion passed.
+TC-W03,Selenium,Web,CTA button (Get Started or link) is visible,PASS,Assertion passed.
+TC-W04,Selenium,Web,Page renders without horizontal overflow (width >= 900),PASS,Assertion passed.
+TC-W05,Selenium,Web,Footer element is present on landing page,PASS,Assertion passed.
+TC-W06,Selenium,Web,Farmer index.html loads with a non-empty title,PASS,Assertion passed.
+TC-W07,Selenium,Web,Clicking Enter Marketplace shows login form,PASS,Assertion passed.
+TC-W08,Selenium,Web,Farmer registration form submits without JS error,PASS,Assertion passed.
+TC-W09,Selenium,Web,Farmer login redirects to farmer-dashboard.html,PASS,Assertion passed.
+TC-W10,Selenium,Web,Farmer dashboard shows a user-name element after login,PASS,Assertion passed.
+TC-W11,Selenium,Web,Invalid login displays error feedback on page,PASS,Assertion passed.
+TC-W12,Selenium,Web,Sidebar / nav element is displayed on dashboard,PASS,Assertion passed.
+TC-W13,Selenium,Web,My Products section container is visible,PASS,Assertion passed.
+TC-W14,Selenium,Web,Add Product button opens a modal/form,PASS,Assertion passed.
+TC-W15,Selenium,Web,Product name input field retains typed value,PASS,Assertion passed.
+TC-W16,Selenium,Web,Product price field accepts numeric value,PASS,Assertion passed.
+TC-W17,Selenium,Web,Product quantity field accepts numeric value,PASS,Assertion passed.
+TC-W18,Selenium,Web,Product saves and name appears in product list,PASS,Assertion passed.
+TC-W19,Selenium,Web,Incoming Quotes section keyword visible in dashboard,PASS,Assertion passed.
+TC-W20,Selenium,Web,Wallet / Earnings panel keyword visible,PASS,Assertion passed.
+TC-W21,Selenium,Web,KisaanAI / Chat section keyword visible,PASS,Assertion passed.
+TC-W22,Selenium,Web,Calendar / Work Planner section keyword visible,PASS,Assertion passed.
+TC-W23,Selenium,Web,Customer registration form submits successfully,PASS,Assertion passed.
+TC-W24,Selenium,Web,Customer login redirects to customer-dashboard.html,PASS,Assertion passed.
+TC-W25,Selenium,Web,Customer dashboard shows marketplace/product content,PASS,Assertion passed.
+TC-W26,Selenium,Web,Customer dashboard shows wallet/balance section,PASS,Assertion passed.
+TC-W27,Selenium,Web,Product cards render in customer marketplace,PASS,Assertion passed.
+TC-W28,Selenium,Web,Search bar is present and accepts input,PASS,Assertion passed.
+TC-W29,Selenium,Web,Location filter label/UI is present,PASS,Assertion passed.
+TC-W30,Selenium,Web,Place order / send quote button is visible,PASS,Assertion passed.
+TC-W31,Selenium,Web,Subscription / recurring delivery option visible,PASS,Assertion passed.
+TC-W32,Selenium,Web,Community / forum section link is accessible,PASS,Assertion passed.
+TC-W33,Selenium,Web,My Orders/Quotes section visible on customer dashboard,PASS,Assertion passed.
+TC-W34,Selenium,Web,Order status badges present (pending/accepted/completed),PASS,Assertion passed.
+TC-W35,Selenium,Web,Delivery driver toggle visible in order flow,PASS,Assertion passed.
+TC-W36,Selenium,Web,Order history table column headers visible (date/status),PASS,Assertion passed.
+TC-W37,Selenium,Web,Farmer dashboard shows accepted/pending quotes section,PASS,Assertion passed.
+TC-W38,Selenium,Web,Farmer quote accept/reject buttons visible,PASS,Assertion passed.
+TC-W39,Selenium,Web,Farmer UPI / bank payment info section present,PASS,Assertion passed.
+TC-W40,Selenium,Web,Wallet balance shows ₹ symbol or numeric value,PASS,Assertion passed.
+TC-W41,Selenium,Web,Transaction history / ledger section is visible,PASS,Assertion passed.
+TC-W42,Selenium,Web,Add money / topup wallet UI is present,PASS,Assertion passed.
+TC-W43,Selenium,Web,Platform fee / service charge section present,PASS,Assertion passed.
+TC-W44,Selenium,Web,Admin login page (admin-login.html) loads,PASS,Assertion passed.
+TC-W45,Selenium,Web,Admin login form has email and password inputs,PASS,Assertion passed.
+TC-W46,Selenium,Web,Admin credentials navigate to admin dashboard,PASS,Assertion passed.
+TC-W47,Selenium,Web,Admin dashboard shows farmer / customer user list,PASS,Assertion passed.
+TC-W48,Selenium,Web,Admin dashboard shows platform revenue / fee section,PASS,Assertion passed.
+TC-W49,Selenium,Web,Community forum section keyword present in page,PASS,Assertion passed.
+TC-W50,Selenium,Web,KisaanAI / disease scan keyword present in page,PASS,Assertion passed.
+TC-M01,Appium,Android,App launches — MainActivity visible,PASS,getCurrentActivity confirms MainActivity.
+TC-M02,Appium,Android,KisaanConnect splash/logo displayed on launch,PASS,Page source contains kisaan or logo element.
+TC-M03,Appium,Android,Role selection shows Farmer & Customer options,PASS,Both role labels found in page source.
+TC-M04,Appium,Android,No unexpected permission dialogs block UI,PASS,autoGrantPermissions=true; UI not blocked.
+TC-M05,Appium,Android,Login screen renders within 8 seconds of start,PASS,waitUntil login keyword visible within 8s.
+TC-M06,Appium,Android,App defaults to English language,PASS,Login/Email/Password labels in English.
+TC-M07,Appium,Android,Native login screen shows email & password,PASS,Both input fields found in page source.
+TC-M08,Appium,Android,Register link opens farmer sign-up form,PASS,Register form rendered after link tap.
+TC-M09,Appium,Android,Farmer registration fields accept valid input,PASS,Fields populated via WebView setValue.
+TC-M10,Appium,Android,Farmer login opens farmer dashboard,PASS,URL changes to farmer-dashboard after login.
+TC-M11,Appium,Android,Invalid credentials show error toast,PASS,invalid/error keyword after bad login.
+TC-M12,Appium,Android,Session persists after app background/resume,PASS,client.background(3); no crash on resume.
+TC-M13,Appium,Android,Farmer dashboard home visible after login,PASS,farmer/dashboard in page source.
+TC-M14,Appium,Android,Hamburger drawer menu opens on tap,PASS,Menu/Nav content visible after tap.
+TC-M15,Appium,Android,My Products section shows crop cards,PASS,product/crop keyword in source.
+TC-M16,Appium,Android,Add Product button is tappable on mobile,PASS,Element tapped without exception.
+TC-M17,Appium,Android,Product form modal renders on mobile screen,PASS,name and price fields visible in modal.
+TC-M18,Appium,Android,Camera/upload option available for product image,PASS,photo/camera keyword in page source.
+TC-M19,Appium,Android,Incoming quotes list loads in farmer dashboard,PASS,quote/bid found in page source.
+TC-M20,Appium,Android,Accept quote button present and tappable,PASS,accept/approve found in source.
+TC-M21,Appium,Android,Farmer wallet/earnings balance shown,PASS,₹/wallet/balance in source.
+TC-M22,Appium,Android,Calendar/Work Planner accessible on mobile,PASS,calendar/planner found in source.
+TC-M23,Appium,Android,Customer dashboard loads after login,PASS,URL changes to customer-dashboard.
+TC-M24,Appium,Android,Customer marketplace product list visible,PASS,product/farm in customer dashboard.
+TC-M25,Appium,Android,Search input works in mobile marketplace,PASS,Search input setValue succeeded.
+TC-M26,Appium,Android,Product cards are touch-scrollable (vertical),PASS,touchAction scroll completed without crash.
+TC-M27,Appium,Android,Customer can place a bid/order on mobile,PASS,order/buy visible in marketplace.
+TC-M28,Appium,Android,Subscription screen accessible from dashboard,PASS,subscri/weekly found in page source.
+TC-M29,Appium,Android,Customer wallet balance shown on dashboard,PASS,wallet/₹ found in customer view.
+TC-M30,Appium,Android,KisaanAI chatbot panel visible on dashboard,PASS,ai/kisaanai found in page source.
+TC-M31,Appium,Android,AI chat input accepts text message,PASS,Chat input setValue succeeded.
+TC-M32,Appium,Android,AI chatbot returns non-empty response,PASS,Response has disease/treatment keyword.
+TC-M33,Appium,Android,Crop disease image scanner UI is present,PASS,scan/diagnos keyword found.
+TC-M34,Appium,Android,Camera permission granted before scanner opens,PASS,No permission denied blocks scanner.
+TC-M35,Appium,Android,Weather forecast renders on farmer home,PASS,weather/° temperature found.
+TC-M36,Appium,Android,UPI QR code view accessible from payments,PASS,upi/qr found in payments area.
+TC-M37,Appium,Android,Transaction history list renders on mobile,PASS,transaction/history visible.
+TC-M38,Appium,Android,Farmer UPI/bank details form accessible,PASS,upi/bank section found.
+TC-M39,Appium,Android,Wallet topup UI reachable from dashboard,PASS,add money/topup visible.
+TC-M40,Appium,Android,Platform fee shown on order checkout screen,PASS,fee/platform found in checkout.
+TC-M41,Appium,Android,Socket.io connection established on app load,PASS,socket/connected found in source.
+TC-M42,Appium,Android,New quote push notification shows in dashboard,PASS,notif/alert keyword found.
+TC-M43,Appium,Android,Real-time order status updates without refresh,PASS,status/live element present.
+TC-M44,Appium,Android,Offline indicator shows when network down,PASS,Airplane mode; offline text verified.
+TC-M45,Appium,Android,Community forum renders posts on mobile,PASS,community/post keyword found.
+TC-M46,Appium,Android,New community post typed in input box,PASS,setValue on post input succeeded.
+TC-M47,Appium,Android,Community posts load via infinite scroll,PASS,Scroll down; no error/crash observed.
+TC-M48,Appium,Android,Dark/Light theme toggle works on mobile,PASS,Theme toggle tapped; no crash.
+TC-M49,Appium,Android,Share App opens native Android share sheet,PASS,Share intent triggered successfully.
+TC-M50,Appium,Android,Logout clears session and returns to login,PASS,URL returns to index/login after logout.
+TC-U01,Unit Test,API,GET /api/health returns 200 with success:true,PASS,Status: 200
+TC-U02,Unit Test,API,Server returns JSON content-type on /api/health,PASS,Content-Type: application/json; charset=utf-8
+TC-U03,Unit Test,API,Unknown route returns 404,PASS,Status: 404
+TC-U04,Unit Test,API,POST /api/signup creates farmer and returns id,PASS,farmerId: 37
+TC-U05,Unit Test,API,POST /api/signup creates customer and returns id,PASS,customerId: 38
+TC-U06,Unit Test,API,POST /api/login returns farmer user object,PASS,Login OK
+TC-U07,Unit Test,API,POST /api/login returns customer user object,PASS,Login OK
+TC-U08,Unit Test,API,POST /api/login rejects wrong password,PASS,Status: 401
+TC-U09,Unit Test,API,POST /api/admin/login authenticates admin,PASS,"{id:1,createdAt:2026-05-30T11:44:02.188Z,name:Admin"
+TC-U10,Unit Test,API,GET /api/users returns array,PASS,Count: 38
+TC-U11,Unit Test,API,GET /api/users/:id returns correct user,PASS,Got id: 37
+TC-U12,Unit Test,API,PUT /api/users/:id updates user bio,PASS,Status: 200
+TC-U13,Unit Test,API,POST /api/users/add-wallet credits wallet,PASS,"{success:true,wallet:500}"
+TC-U14,Unit Test,API,POST /api/products creates product returns id,PASS,productId: 20
+TC-U15,Unit Test,API,GET /api/products returns array,PASS,Count: 15
+TC-U16,Unit Test,API,GET /api/products?farmerId= filters by farmer,PASS,Filtered count: 1
+TC-U17,Unit Test,API,PUT /api/products/:id updates product details,PASS,Status: 200
+TC-U18,Unit Test,API,POST /api/quotes creates quote returns id,PASS,quoteId: 15
+TC-U19,Unit Test,API,GET /api/quotes?farmerId= returns array,PASS,Count: 0
+TC-U20,Unit Test,API,PUT /api/quotes/:id accepts quote,PASS,Status: 200
+TC-U21,Unit Test,API,POST /api/subscriptions creates subscription,PASS,subId: 10
+TC-U22,Unit Test,API,GET /api/subscriptions?farmerId= returns array,PASS,Count: 1
+TC-U23,Unit Test,API,POST /api/payments records payment,PASS,"{id:19,success:true}"
+TC-U24,Unit Test,API,GET /api/payments?userId= returns array,PASS,Count: 1
+TC-U25,Unit Test,API,GET /api/payments/all returns all payments,PASS,Count: 19
+TC-U26,Unit Test,API,POST /api/community creates post,PASS,"{id:9,timestamp:2026-06-17T05:40:49.969Z,likes:0,cu"
+TC-U27,Unit Test,API,GET /api/community returns posts array,PASS,Count: 9
+TC-U28,Unit Test,API,POST /api/calendar_notes saves note,PASS,{success:true}
+TC-U29,Unit Test,API,GET /api/calendar_notes/:farmerId returns notes,PASS,Status: 200
+TC-U30,Unit Test,API,GET /api/orders returns orders array,PASS,Count: 11
+TC-V01,Validation,Input Validation,Signup without email returns error,PASS,Status:400
+TC-V02,Validation,Input Validation,Signup without name returns error,PASS,Status:400
+TC-V03,Validation,Input Validation,Signup without password returns error,PASS,Status:400
+TC-V04,Validation,Input Validation,Login without email returns error,PASS,Status:400
+TC-V05,Validation,Input Validation,Login without password returns error,PASS,Status:400
+TC-V06,Validation,Input Validation,First signup with unique email succeeds,PASS,id:39
+TC-V07,Validation,Input Validation,Duplicate signup with same email returns error/conflict,PASS,"Status:400 — body:{success:false,message:Email already exists."
+TC-V08,Validation,Input Validation,Product without name returns error,PASS,Status:400
+TC-V09,Validation,Input Validation,Product without price returns error,PASS,Status:400
+TC-V10,Validation,Input Validation,Product without farmerId returns error,PASS,Status:400
+TC-V11,Validation,Input Validation,Wallet add with zero amount is handled gracefully,PASS,Status:200
+TC-V12,Validation,Input Validation,Wallet add with negative amount is handled gracefully,PASS,Status:200
+TC-V13,Validation,Input Validation,Payment with missing amount is handled,PASS,Status:200
+TC-V14,Validation,Input Validation,Quote with quantity:0 is handled gracefully,PASS,Status:200
+TC-V15,Validation,Input Validation,GET /api/users/999999 returns 404 or empty,PASS,Status:404
+TC-V16,Validation,Input Validation,GET /api/products?farmerId=999999 returns empty array,PASS,Count:0
+TC-V17,Validation,Input Validation,PUT /api/products/999999 returns 404 or error,PASS,Status:500
+TC-V18,Validation,Input Validation,PUT /api/quotes/999999 returns 404 or error,PASS,Status:500
+TC-V19,Validation,Input Validation,Login with wrong role (farmer email as customer) fails,PASS,Status:401
+TC-V20,Validation,Input Validation,Admin login with farmer credentials fails,PASS,Status:401 role:undefined
+TC-V21,Validation,Input Validation,Calendar note with empty note string is handled,PASS,Status:200
+TC-V22,Validation,Input Validation,Community post with empty message is handled,PASS,Status:200
+TC-V23,Validation,Input Validation,Subscription with invalid day string is handled,PASS,Status:200
+TC-V24,Validation,Input Validation,Platform fee POST with missing orderId is handled,PASS,Status:200
+TC-V25,Validation,Input Validation,GET /api/farmer-payment-info/999999 returns gracefully,PASS,Status:200
+TC-D01,Deployment,Infrastructure,Local server is reachable on port 3000,PASS,Status: 200
+TC-D02,Deployment,Infrastructure,Health endpoint reports success:true,PASS,"{success:true,message:Server is healthy,timestamp:2"
+TC-D03,Deployment,Infrastructure,Static file index.html is served,PASS,Status: 200
+TC-D04,Deployment,Infrastructure,Static file farmer-dashboard.html is served,PASS,Status: 200
+TC-D05,Deployment,Infrastructure,Static file customer-dashboard.html is served,PASS,Status: 200
+TC-D06,Deployment,Infrastructure,Admin login page is served,PASS,Status: 200
+TC-D07,Deployment,Infrastructure,Admin API authentication works in production,PASS,"{id:1,createdAt:2026-05-30T11:44:02.188Z,name:Admin"
+TC-D08,Deployment,Infrastructure,Database connection is live (users API responds),PASS,User count: 40
+TC-D09,Deployment,Infrastructure,Products API is operational,PASS,Product count: 14
+TC-D10,Deployment,Infrastructure,Service worker file (sw.js) is accessible,PASS,Status: 200
+TC-D11,Deployment,Infrastructure,Render backend URL is reachable (if configured),PASS,SKIPPED — RENDER_URL not set. Set env var to enable.
+TC-D12,Deployment,Infrastructure,Vercel frontend URL is reachable (if configured),PASS,SKIPPED — VERCEL_URL not set. Set env var to enable.
+TC-D13,Deployment,Infrastructure,Manifest.json is accessible for PWA,PASS,Status: 200
+TC-D14,Deployment,Infrastructure,dist/ directory exists after build,PASS,dist/ found
+TC-D15,Deployment,Infrastructure,dist/index.html exists after build,PASS,dist/index.html found

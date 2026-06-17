@@ -610,6 +610,9 @@ app.post('/api/reset-password', async (req, res) => {
 // AUTH
 app.post('/api/login', async (req, res) => {
     const { email, password, role } = req.body;
+    if (!email) return res.status(400).json({ success: false, message: 'Email is required.' });
+    if (!password) return res.status(400).json({ success: false, message: 'Password is required.' });
+    if (!role) return res.status(400).json({ success: false, message: 'Role is required.' });
     try {
         const user = await fdb.findUserByEmailAndRole(email, password, role);
         if (user) res.json(user);
@@ -621,6 +624,10 @@ app.post('/api/login', async (req, res) => {
 
 app.post('/api/signup', async (req, res) => {
     const { name, email, password, role, mobile, location, vehicleType, licenseNumber } = req.body;
+    if (!email) return res.status(400).json({ success: false, message: 'Email is required.' });
+    if (!name) return res.status(400).json({ success: false, message: 'Name is required.' });
+    if (!password) return res.status(400).json({ success: false, message: 'Password is required.' });
+    if (!role) return res.status(400).json({ success: false, message: 'Role is required.' });
     try {
         const existing = await fdb.findUserByEmail(email);
         if (existing) return res.status(400).json({ success: false, message: 'Email already exists.' });
@@ -781,6 +788,9 @@ app.get('/api/products', async (req, res) => {
 
 app.post('/api/products', async (req, res) => {
     const p = req.body;
+    if (!p.name) return res.status(400).json({ success: false, message: 'Product name is required.' });
+    if (p.price === undefined || p.price === null) return res.status(400).json({ success: false, message: 'Product price is required.' });
+    if (!p.farmerId) return res.status(400).json({ success: false, message: 'Farmer ID is required.' });
     try {
         const product = await fdb.createProduct({ farmerId: String(p.farmerId), farmerName: p.farmerName, farmerEmail: p.farmerEmail, name: p.name, price: p.price, marketPrice: p.marketPrice, quantity: p.quantity, age: p.age, location: p.location, images: p.images || [] });
         res.json({ id: product.id });

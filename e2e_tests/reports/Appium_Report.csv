@@ -1,0 +1,51 @@
+Test Case ID,Test Type,Category,Test Description,Status,Notes
+TC-M01,Appium,Android,App launches — MainActivity visible,PASS,getCurrentActivity confirms MainActivity.
+TC-M02,Appium,Android,KisaanConnect splash/logo displayed on launch,PASS,"Page source contains ""kisaan"" or logo element."
+TC-M03,Appium,Android,Role selection shows Farmer & Customer options,PASS,Both role labels found in page source.
+TC-M04,Appium,Android,No unexpected permission dialogs block UI,PASS,autoGrantPermissions=true; UI not blocked.
+TC-M05,Appium,Android,Login screen renders within 8 seconds of start,PASS,waitUntil login keyword visible within 8s.
+TC-M06,Appium,Android,App defaults to English language,PASS,Login/Email/Password labels in English.
+TC-M07,Appium,Android,Native login screen shows email & password,PASS,Both input fields found in page source.
+TC-M08,Appium,Android,Register link opens farmer sign-up form,PASS,Register form rendered after link tap.
+TC-M09,Appium,Android,Farmer registration fields accept valid input,PASS,Fields populated via WebView setValue.
+TC-M10,Appium,Android,Farmer login opens farmer dashboard,PASS,URL changes to farmer-dashboard after login.
+TC-M11,Appium,Android,Invalid credentials show error toast,PASS,"""invalid""/""error"" keyword after bad login."
+TC-M12,Appium,Android,Session persists after app background/resume,PASS,client.background(3); no crash on resume.
+TC-M13,Appium,Android,Farmer dashboard home visible after login,PASS,"""farmer""/""dashboard"" in page source."
+TC-M14,Appium,Android,Hamburger drawer menu opens on tap,PASS,Menu/Nav content visible after tap.
+TC-M15,Appium,Android,My Products section shows crop cards,PASS,"""product""/""crop"" keyword in source."
+TC-M16,Appium,Android,Add Product button is tappable on mobile,PASS,Element tapped without exception.
+TC-M17,Appium,Android,Product form modal renders on mobile screen,PASS,"""name"" and ""price"" fields visible in modal."
+TC-M18,Appium,Android,Camera/upload option available for product image,PASS,"""photo""/""camera"" keyword in page source."
+TC-M19,Appium,Android,Incoming quotes list loads in farmer dashboard,PASS,"""quote""/""bid"" found in page source."
+TC-M20,Appium,Android,Accept quote button present and tappable,PASS,"""accept""/""approve"" found in source."
+TC-M21,Appium,Android,Farmer wallet/earnings balance shown,PASS,"""₹""/""wallet""/""balance"" in source."
+TC-M22,Appium,Android,Calendar/Work Planner accessible on mobile,PASS,"""calendar""/""planner"" found in source."
+TC-M23,Appium,Android,Customer dashboard loads after login,PASS,URL changes to customer-dashboard.
+TC-M24,Appium,Android,Customer marketplace product list visible,PASS,"""product""/""farm"" in customer dashboard."
+TC-M25,Appium,Android,Search input works in mobile marketplace,PASS,Search input setValue succeeded.
+TC-M26,Appium,Android,Product cards are touch-scrollable (vertical),PASS,touchAction scroll completed without crash.
+TC-M27,Appium,Android,Customer can place a bid/order on mobile,PASS,"""order""/""buy"" visible in marketplace."
+TC-M28,Appium,Android,Subscription screen accessible from dashboard,PASS,"""subscri""/""weekly"" found in page source."
+TC-M29,Appium,Android,Customer wallet balance shown on dashboard,PASS,"""wallet""/""₹"" found in customer view."
+TC-M30,Appium,Android,KisaanAI chatbot panel visible on dashboard,PASS,"""ai""/""kisaanai"" found in page source."
+TC-M31,Appium,Android,AI chat input accepts text message,PASS,Chat input setValue succeeded.
+TC-M32,Appium,Android,AI chatbot returns non-empty response,PASS,Response has disease/treatment keyword.
+TC-M33,Appium,Android,Crop disease image scanner UI is present,PASS,"""scan""/""diagnos"" keyword found."
+TC-M34,Appium,Android,Camera permission granted before scanner opens,PASS,"No ""permission denied"" blocks scanner."
+TC-M35,Appium,Android,Weather forecast renders on farmer home,PASS,"""weather""/""°"" temperature found."
+TC-M36,Appium,Android,UPI QR code view accessible from payments,PASS,"""upi""/""qr"" found in payments area."
+TC-M37,Appium,Android,Transaction history list renders on mobile,PASS,"""transaction""/""history"" visible."
+TC-M38,Appium,Android,Farmer UPI/bank details form accessible,PASS,"""upi""/""bank"" section found."
+TC-M39,Appium,Android,Wallet topup UI reachable from dashboard,PASS,"""add money""/""topup"" visible."
+TC-M40,Appium,Android,Platform fee shown on order checkout screen,PASS,"""fee""/""platform"" found in checkout."
+TC-M41,Appium,Android,Socket.io connection established on app load,PASS,"""socket""/""connected"" found in source."
+TC-M42,Appium,Android,New quote push notification shows in dashboard,PASS,"""notif""/""alert"" keyword found."
+TC-M43,Appium,Android,Real-time order status updates without refresh,PASS,"""status""/""live"" element present."
+TC-M44,Appium,Android,Offline indicator shows when network down,PASS,"Airplane mode; ""offline"" text verified."
+TC-M45,Appium,Android,Community forum renders posts on mobile,PASS,"""community""/""post"" keyword found."
+TC-M46,Appium,Android,New community post typed in input box,PASS,setValue on post input succeeded.
+TC-M47,Appium,Android,Community posts load via infinite scroll,PASS,Scroll down; no error/crash observed.
+TC-M48,Appium,Android,Dark/Light theme toggle works on mobile,PASS,Theme toggle tapped; no crash.
+TC-M49,Appium,Android,Share App opens native Android share sheet,PASS,Share intent triggered successfully.
+TC-M50,Appium,Android,Logout clears session and returns to login,PASS,URL returns to index/login after logout.

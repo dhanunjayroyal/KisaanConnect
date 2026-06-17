@@ -1086,7 +1086,7 @@
         <div id="products-section" class="section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2>My Products</h2>
-                <button class="btn btn-p" onclick="openProductModal()"><i class="fas fa-plus"></i> Add Product</button>
+                <button class="btn btn-p" id="add-product-btn" onclick="openProductModal()"><i class="fas fa-plus"></i> Add Product</button>
             </div>
             <div id="products-grid" class="grid">
                 <!-- Products will be injected here -->
@@ -1791,7 +1791,7 @@
                 <div class="img-preview-container" id="img-previews"></div>
             </div>
             <div style="display: flex; gap: 15px; margin-top: 20px;">
-                <button class="btn btn-p" style="flex:1" onclick="saveProduct()">Save Product</button>
+                <button class="btn btn-p" id="save-product-btn" style="flex:1" onclick="saveProduct()">Save Product</button>
                 <button class="btn btn-outline" style="flex:1" onclick="closeProductModal()">Cancel</button>
             </div>
         </div>
@@ -2594,7 +2594,7 @@
                     closeProductModal();
                     refreshData();
                     if (window.Android) Android.showToast("Product Saved!");
-                    else alert("Product Saved!");
+                    else showToast("Product Saved!");
                 } else {
                     const errorMsg = await res.text();
                     alert("Error saving product: " + errorMsg);

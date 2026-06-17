@@ -1,0 +1,51 @@
+Test Case ID,Test Type,Category,Test Description,Status,Notes
+TC-W01,Selenium,Web,Landing page title contains KisaanConnect,PASS,Assertion passed.
+TC-W02,Selenium,Web,Hero / h1 headline element is displayed,PASS,Assertion passed.
+TC-W03,Selenium,Web,"CTA button (""Get Started"" or link) is visible",PASS,Assertion passed.
+TC-W04,Selenium,Web,Page renders without horizontal overflow (width >= 900),PASS,Assertion passed.
+TC-W05,Selenium,Web,Footer element is present on landing page,PASS,Assertion passed.
+TC-W06,Selenium,Web,Farmer index.html loads with a non-empty title,PASS,Assertion passed.
+TC-W07,Selenium,Web,Clicking Enter Marketplace shows login form,PASS,Assertion passed.
+TC-W08,Selenium,Web,Farmer registration form submits without JS error,PASS,Assertion passed.
+TC-W09,Selenium,Web,Farmer login redirects to farmer-dashboard.html,PASS,Assertion passed.
+TC-W10,Selenium,Web,Farmer dashboard shows a user-name element after login,PASS,Assertion passed.
+TC-W11,Selenium,Web,Invalid login displays error feedback on page,PASS,Assertion passed.
+TC-W12,Selenium,Web,Sidebar / nav element is displayed on dashboard,PASS,Assertion passed.
+TC-W13,Selenium,Web,My Products section container is visible,PASS,Assertion passed.
+TC-W14,Selenium,Web,Add Product button opens a modal/form,PASS,Assertion passed.
+TC-W15,Selenium,Web,Product name input field retains typed value,PASS,Assertion passed.
+TC-W16,Selenium,Web,Product price field accepts numeric value,PASS,Assertion passed.
+TC-W17,Selenium,Web,Product quantity field accepts numeric value,PASS,Assertion passed.
+TC-W18,Selenium,Web,Product saves and name appears in product list,PASS,Assertion passed.
+TC-W19,Selenium,Web,Incoming Quotes section keyword visible in dashboard,PASS,Assertion passed.
+TC-W20,Selenium,Web,Wallet / Earnings panel keyword visible,PASS,Assertion passed.
+TC-W21,Selenium,Web,KisaanAI / Chat section keyword visible,PASS,Assertion passed.
+TC-W22,Selenium,Web,Calendar / Work Planner section keyword visible,PASS,Assertion passed.
+TC-W23,Selenium,Web,Customer registration form submits successfully,PASS,Assertion passed.
+TC-W24,Selenium,Web,Customer login redirects to customer-dashboard.html,PASS,Assertion passed.
+TC-W25,Selenium,Web,Customer dashboard shows marketplace/product content,PASS,Assertion passed.
+TC-W26,Selenium,Web,Customer dashboard shows wallet/balance section,PASS,Assertion passed.
+TC-W27,Selenium,Web,Product cards render in customer marketplace,PASS,Assertion passed.
+TC-W28,Selenium,Web,Search bar is present and accepts input,PASS,Assertion passed.
+TC-W29,Selenium,Web,Location filter label/UI is present,PASS,Assertion passed.
+TC-W30,Selenium,Web,Place order / send quote button is visible,PASS,Assertion passed.
+TC-W31,Selenium,Web,Subscription / recurring delivery option visible,PASS,Assertion passed.
+TC-W32,Selenium,Web,Community / forum section link is accessible,PASS,Assertion passed.
+TC-W33,Selenium,Web,My Orders/Quotes section visible on customer dashboard,PASS,Assertion passed.
+TC-W34,Selenium,Web,Order status badges present (pending/accepted/completed),PASS,Assertion passed.
+TC-W35,Selenium,Web,Delivery driver toggle visible in order flow,PASS,Assertion passed.
+TC-W36,Selenium,Web,Order history table column headers visible (date/status),PASS,Assertion passed.
+TC-W37,Selenium,Web,Farmer dashboard shows accepted/pending quotes section,PASS,Assertion passed.
+TC-W38,Selenium,Web,Farmer quote accept/reject buttons visible,PASS,Assertion passed.
+TC-W39,Selenium,Web,Farmer UPI / bank payment info section present,PASS,Assertion passed.
+TC-W40,Selenium,Web,Wallet balance shows ₹ symbol or numeric value,PASS,Assertion passed.
+TC-W41,Selenium,Web,Transaction history / ledger section is visible,PASS,Assertion passed.
+TC-W42,Selenium,Web,Add money / topup wallet UI is present,PASS,Assertion passed.
+TC-W43,Selenium,Web,Platform fee / service charge section present,PASS,Assertion passed.
+TC-W44,Selenium,Web,Admin login page (admin-login.html) loads,PASS,Assertion passed.
+TC-W45,Selenium,Web,Admin login form has email and password inputs,PASS,Assertion passed.
+TC-W46,Selenium,Web,Admin credentials navigate to admin dashboard,PASS,Assertion passed.
+TC-W47,Selenium,Web,Admin dashboard shows farmer / customer user list,PASS,Assertion passed.
+TC-W48,Selenium,Web,Admin dashboard shows platform revenue / fee section,PASS,Assertion passed.
+TC-W49,Selenium,Web,Community forum section keyword present in page,PASS,Assertion passed.
+TC-W50,Selenium,Web,KisaanAI / disease scan keyword present in page,PASS,Assertion passed.

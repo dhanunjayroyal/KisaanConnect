@@ -1,0 +1,26 @@
+Test Case ID,Test Type,Category,Test Description,Status,Notes
+TC-V01,Validation,Input Validation,Signup without email returns error,PASS,Status:400
+TC-V02,Validation,Input Validation,Signup without name returns error,PASS,Status:400
+TC-V03,Validation,Input Validation,Signup without password returns error,PASS,Status:400
+TC-V04,Validation,Input Validation,Login without email returns error,PASS,Status:400
+TC-V05,Validation,Input Validation,Login without password returns error,PASS,Status:400
+TC-V06,Validation,Input Validation,First signup with unique email succeeds,PASS,id:39
+TC-V07,Validation,Input Validation,Duplicate signup with same email returns error/conflict,PASS,"Status:400 — body:{""success"":false,""message"":""Email already exists."""
+TC-V08,Validation,Input Validation,Product without name returns error,PASS,Status:400
+TC-V09,Validation,Input Validation,Product without price returns error,PASS,Status:400
+TC-V10,Validation,Input Validation,Product without farmerId returns error,PASS,Status:400
+TC-V11,Validation,Input Validation,Wallet add with zero amount is handled gracefully,PASS,Status:200
+TC-V12,Validation,Input Validation,Wallet add with negative amount is handled gracefully,PASS,Status:200
+TC-V13,Validation,Input Validation,Payment with missing amount is handled,PASS,Status:200
+TC-V14,Validation,Input Validation,Quote with quantity:0 is handled gracefully,PASS,Status:200
+TC-V15,Validation,Input Validation,GET /api/users/999999 returns 404 or empty,PASS,Status:404
+TC-V16,Validation,Input Validation,GET /api/products?farmerId=999999 returns empty array,PASS,Count:0
+TC-V17,Validation,Input Validation,PUT /api/products/999999 returns 404 or error,PASS,Status:500
+TC-V18,Validation,Input Validation,PUT /api/quotes/999999 returns 404 or error,PASS,Status:500
+TC-V19,Validation,Input Validation,Login with wrong role (farmer email as customer) fails,PASS,Status:401
+TC-V20,Validation,Input Validation,Admin login with farmer credentials fails,PASS,Status:401 role:undefined
+TC-V21,Validation,Input Validation,Calendar note with empty note string is handled,PASS,Status:200
+TC-V22,Validation,Input Validation,Community post with empty message is handled,PASS,Status:200
+TC-V23,Validation,Input Validation,Subscription with invalid day string is handled,PASS,Status:200
+TC-V24,Validation,Input Validation,Platform fee POST with missing orderId is handled,PASS,Status:200
+TC-V25,Validation,Input Validation,GET /api/farmer-payment-info/999999 returns gracefully,PASS,Status:200
