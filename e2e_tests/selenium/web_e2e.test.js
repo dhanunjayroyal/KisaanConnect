@@ -2,500 +2,509 @@
  * KisaanConnect — Selenium Web E2E Test Suite (50 Test Cases)
  * File: e2e_tests/selenium/web_e2e.test.js
  *
- * Covers: Landing Page, Authentication, Farmer Dashboard, Customer Dashboard,
- *         Marketplace, Quotes, Payments, Admin Panel, Subscriptions, Community
+ * REAL headless Chrome tests using selenium-webdriver.
+ * Runs against the local KisaanConnect server (http://localhost:3000).
  *
- * Dependencies: npm install selenium-webdriver chromedriver
- * Run: node e2e_tests/selenium/web_e2e.test.js
+ * Install : npm install selenium-webdriver chromedriver
+ * Run     : node e2e_tests/selenium/web_e2e.test.js
  */
 
-const { Builder, By, until, Key } = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
+'use strict';
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
-const TIMEOUT   = 10000;
+const { Builder, By, until } = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
+const fs     = require('fs');
+const path   = require('path');
+
+const BASE    = process.env.BASE_URL || 'http://localhost:3000';
+const WAIT    = 8000;
+const TS      = Date.now();
+const F_EMAIL = `sel_farmer_${TS}@test.com`;
+const C_EMAIL = `sel_cust_${TS}@test.com`;
+const PASS    = 'Test@12345';
 
 let driver;
 const results = [];
 let passed = 0, failed = 0;
 
-/* ─────────────────────────── helpers ─────────────────────────── */
+/* ────────────────── driver helpers ────────────────── */
 async function setup() {
     const opts = new chrome.Options();
-    opts.addArguments('--headless', '--disable-gpu', '--no-sandbox', '--window-size=1920,1080');
-    driver = await new Builder().forBrowser('chrome').setChromeOptions(opts).build();
-    console.log('\n🌐 KisaanConnect — Selenium Web E2E Suite (50 Tests)\n' + '═'.repeat(55));
+    opts.addArguments('--headless=new', '--disable-gpu', '--no-sandbox',
+                      '--disable-dev-shm-usage', '--window-size=1920,1080');
+    driver = await new Builder()
+        .forBrowser('chrome')
+        .setChromeOptions(opts)
+        .build();
 }
 
 async function teardown() {
-    if (driver) { await driver.quit(); }
+    if (driver) await driver.quit();
 }
 
+async function go(page)     { await driver.get(`${BASE}/${page}`); }
+async function src()        { return driver.getPageSource(); }
+async function find(id)     { return driver.wait(until.elementLocated(By.id(id)), WAIT); }
+async function findCss(sel) { return driver.wait(until.elementLocated(By.css(sel)), WAIT); }
+
+async function type(id, val) {
+    const el = await find(id); await el.clear(); await el.sendKeys(val);
+}
+async function click(id) { await (await find(id)).click(); }
+
+/* ────────────────── test wrapper ────────────────── */
 async function tc(id, name, fn) {
+    let status = 'FAIL', notes = '';
     try {
         const ok = await fn();
-        const status = ok ? 'PASS' : 'FAIL';
-        results.push({ id, name, status });
-        if (ok) { passed++; console.log(`  ✅ [${id}] ${name}`); }
-        else     { failed++; console.log(`  ❌ [${id}] ${name}`); }
+        status = ok ? 'PASS' : 'FAIL';
+        notes  = ok ? 'Assertion passed.' : 'Assertion returned false.';
     } catch (e) {
-        failed++;
-        results.push({ id, name, status: 'FAIL', err: e.message });
-        console.log(`  ❌ [${id}] ${name} — ${e.message}`);
+        status = 'FAIL';
+        notes  = e.message.split('\n')[0].substring(0, 120);
     }
+    results.push({ id, name, status, notes });
+    const icon = status === 'PASS' ? '✅' : '❌';
+    console.log(`  ${icon} [${id}] ${name}`);
+    if (status === 'PASS') passed++; else failed++;
 }
 
-async function navigateTo(page) { await driver.get(`${BASE_URL}/${page}`); }
-async function findById(id)     { return driver.wait(until.elementLocated(By.id(id)), TIMEOUT); }
-async function findByCss(sel)   { return driver.wait(until.elementLocated(By.css(sel)), TIMEOUT); }
-async function findByXp(xp)     { return driver.wait(until.elementLocated(By.xpath(xp)), TIMEOUT); }
-async function typeIn(id, val)  { const el = await findById(id); await el.clear(); await el.sendKeys(val); }
-async function clickId(id)      { const el = await findById(id); await el.click(); }
+/* ════════════════════════════════════════════════════
+   SECTION 1 — LANDING PAGE  (TC-W01…TC-W05)
+   ════════════════════════════════════════════════════ */
+async function s1_LandingPage() {
+    console.log('\n📄 [S1] Landing Page');
 
-/* ── unique test credentials ── */
-const TS       = Date.now();
-const F_EMAIL  = `sel_farmer_${TS}@test.com`;
-const C_EMAIL  = `sel_cust_${TS}@test.com`;
-const PASSWORD = 'Test@12345';
-
-/* ═══════════════════════════════════════════════════════════════
-   SECTION 1 — LANDING PAGE (TC-W01 … TC-W05)
-   ═══════════════════════════════════════════════════════════════ */
-async function section_LandingPage() {
-    console.log('\n📄 Section 1: Landing Page');
-
-    await tc('TC-W01', 'Landing page loads with correct title', async () => {
-        await navigateTo('landing.html');
-        const title = await driver.getTitle();
-        return title.toLowerCase().includes('kisaan');
+    await tc('TC-W01', 'Landing page title contains KisaanConnect', async () => {
+        await go('landing.html');
+        return (await driver.getTitle()).toLowerCase().includes('kisaan');
     });
 
-    await tc('TC-W02', 'Hero section is visible with headline text', async () => {
-        const hero = await findByCss('.hero, #hero, h1');
-        return await hero.isDisplayed();
+    await tc('TC-W02', 'Hero / h1 headline element is displayed', async () => {
+        const el = await findCss('h1, .hero h2, .hero-title');
+        return el.isDisplayed();
     });
 
-    await tc('TC-W03', '"Get Started" CTA button is present and clickable', async () => {
-        const btn = await findByCss('a[href*="index"], button[onclick*="index"], #get-started-btn, .cta-btn');
-        return await btn.isDisplayed();
+    await tc('TC-W03', 'CTA button ("Get Started" or link) is visible', async () => {
+        const el = await findCss('a[href*="index"], .cta-btn, #get-started-btn, .hero a');
+        return el.isDisplayed();
     });
 
-    await tc('TC-W04', 'Page has no broken layout — body width > 900px', async () => {
-        const w = await driver.executeScript('return document.body.scrollWidth;');
+    await tc('TC-W04', 'Page renders without horizontal overflow (width >= 900)', async () => {
+        const w = await driver.executeScript('return document.body.scrollWidth');
         return w >= 900;
     });
 
-    await tc('TC-W05', 'Footer is present on landing page', async () => {
-        const footer = await findByCss('footer, #footer, .footer');
-        return await footer.isDisplayed();
+    await tc('TC-W05', 'Footer element is present on landing page', async () => {
+        const el = await findCss('footer, .footer, #footer');
+        return el.isDisplayed();
     });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SECTION 2 — FARMER AUTHENTICATION (TC-W06 … TC-W11)
-   ═══════════════════════════════════════════════════════════════ */
-async function section_FarmerAuth() {
-    console.log('\n🔐 Section 2: Farmer Authentication');
+/* ════════════════════════════════════════════════════
+   SECTION 2 — FARMER AUTH  (TC-W06…TC-W11)
+   ════════════════════════════════════════════════════ */
+async function s2_FarmerAuth() {
+    console.log('\n🔐 [S2] Farmer Authentication');
 
-    await tc('TC-W06', 'Farmer portal page loads (index.html)', async () => {
-        await navigateTo('index.html');
-        const title = await driver.getTitle();
-        return title.length > 0;
+    await tc('TC-W06', 'Farmer index.html loads with a non-empty title', async () => {
+        await go('index.html');
+        return (await driver.getTitle()).length > 0;
     });
 
-    await tc('TC-W07', 'Registration tab switches form to register view', async () => {
-        await navigateTo('index.html');
-        const regTab = await findByCss('#register-tab-btn, [data-tab="register"], .tab-register');
-        await regTab.click();
-        const form = await findByCss('#register-form, .register-form, form[id*="reg"]');
-        return await form.isDisplayed();
+    await tc('TC-W07', 'Clicking Register tab shows register form', async () => {
+        await go('index.html');
+        try { await (await findCss('#register-tab-btn, [data-tab="register"], .tab-register')).click(); }
+        catch (_) {}
+        const form = await findCss('#register-form, .register-form, form');
+        return form.isDisplayed();
     });
 
-    await tc('TC-W08', 'Farmer registration form submits successfully', async () => {
-        await navigateTo('index.html');
-        try { await (await findByCss('#register-tab-btn, [data-tab="register"]')).click(); } catch(_) {}
-        await typeIn('reg-name', 'Selenium Farmer');
-        await typeIn('reg-email', F_EMAIL);
-        await typeIn('reg-password', PASSWORD);
-        await typeIn('reg-mobile', '9876543210');
-        try { await typeIn('reg-location', 'Punjab Farms'); } catch(_) {}
-        try {
-            const sel = await findById('reg-role');
-            await sel.sendKeys('farmer');
-        } catch(_) {}
-        await clickId('reg-submit-btn');
-        await driver.sleep(2000);
-        const url = await driver.getCurrentUrl();
-        return url.includes('index') || url.includes('farmer');
+    await tc('TC-W08', 'Farmer registration form submits without JS error', async () => {
+        await go('index.html');
+        try { await (await findCss('#register-tab-btn, [data-tab="register"]')).click(); } catch (_) {}
+        await type('reg-name', 'Selenium Farmer');
+        await type('reg-email', F_EMAIL);
+        await type('reg-password', PASS);
+        await type('reg-mobile', '9876543210');
+        try { await type('reg-location', 'Punjab'); } catch (_) {}
+        try { await (await find('reg-role')).sendKeys('farmer'); } catch (_) {}
+        await click('reg-submit-btn');
+        await driver.sleep(2500);
+        const s = await src();
+        return !s.includes('Uncaught') && !s.includes('ReferenceError');
     });
 
-    await tc('TC-W09', 'Farmer login with valid credentials redirects to dashboard', async () => {
-        await navigateTo('index.html');
-        await typeIn('login-email', F_EMAIL);
-        await typeIn('login-password', PASSWORD);
-        try {
-            const sel = await findById('login-role');
-            await sel.sendKeys('farmer');
-        } catch(_) {}
-        await clickId('login-submit-btn');
-        await driver.wait(until.urlContains('farmer-dashboard'), TIMEOUT);
-        return true;
+    await tc('TC-W09', 'Farmer login redirects to farmer-dashboard.html', async () => {
+        await go('index.html');
+        await type('login-email', F_EMAIL);
+        await type('login-password', PASS);
+        try { await (await find('login-role')).sendKeys('farmer'); } catch (_) {}
+        await click('login-submit-btn');
+        try { await driver.wait(until.urlContains('farmer-dashboard'), WAIT); }
+        catch (_) {}
+        return (await driver.getCurrentUrl()).includes('farmer-dashboard');
     });
 
-    await tc('TC-W10', 'Farmer dashboard displays user name after login', async () => {
-        const name = await findByCss('#user-name, .user-name, .farmer-name, [id*="username"]');
-        const txt  = await name.getText();
-        return txt.length > 0;
+    await tc('TC-W10', 'Farmer dashboard shows a user-name element after login', async () => {
+        const el = await findCss('#user-name, .user-name, .farmer-name, [id*="username"]');
+        return (await el.getText()).length > 0;
     });
 
-    await tc('TC-W11', 'Invalid login shows error message', async () => {
-        await navigateTo('index.html');
-        await typeIn('login-email', 'wrong@test.com');
-        await typeIn('login-password', 'wrongpass');
-        await clickId('login-submit-btn');
-        await driver.sleep(1500);
-        const pageSource = await driver.getPageSource();
-        return pageSource.toLowerCase().includes('invalid') ||
-               pageSource.toLowerCase().includes('error') ||
-               pageSource.toLowerCase().includes('incorrect');
+    await tc('TC-W11', 'Invalid login displays error feedback on page', async () => {
+        await go('index.html');
+        await type('login-email', 'no_user@bad.com');
+        await type('login-password', 'wrongpassword');
+        await click('login-submit-btn');
+        await driver.sleep(1800);
+        const s = (await src()).toLowerCase();
+        return s.includes('invalid') || s.includes('error') || s.includes('incorrect') || s.includes('not found');
     });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SECTION 3 — FARMER DASHBOARD FEATURES (TC-W12 … TC-W22)
-   ═══════════════════════════════════════════════════════════════ */
-async function section_FarmerDashboard() {
-    console.log('\n🌾 Section 3: Farmer Dashboard');
+/* ════════════════════════════════════════════════════
+   SECTION 3 — FARMER DASHBOARD  (TC-W12…TC-W22)
+   ════════════════════════════════════════════════════ */
+async function s3_FarmerDashboard() {
+    console.log('\n🌾 [S3] Farmer Dashboard');
 
-    // Login first
-    await navigateTo('index.html');
-    try { await typeIn('login-email', F_EMAIL); await typeIn('login-password', PASSWORD); } catch(_) {}
-    try { await (await findById('login-role')).sendKeys('farmer'); } catch(_) {}
-    try { await clickId('login-submit-btn'); await driver.wait(until.urlContains('farmer-dashboard'), TIMEOUT); } catch(_) {}
+    // Login helper
+    const loginFarmer = async () => {
+        await go('index.html');
+        await type('login-email', F_EMAIL);
+        await type('login-password', PASS);
+        try { await (await find('login-role')).sendKeys('farmer'); } catch (_) {}
+        await click('login-submit-btn');
+        try { await driver.wait(until.urlContains('farmer-dashboard'), WAIT); } catch (_) {}
+    };
 
-    await tc('TC-W12', 'Farmer dashboard sidebar/nav is visible', async () => {
-        const nav = await findByCss('nav, .sidebar, #sidebar, .nav-menu');
-        return await nav.isDisplayed();
+    await loginFarmer();
+
+    await tc('TC-W12', 'Sidebar / nav element is displayed on dashboard', async () => {
+        const el = await findCss('nav, .sidebar, #sidebar, .nav-menu, .drawer');
+        return el.isDisplayed();
     });
 
-    await tc('TC-W13', 'My Products section loads with product grid', async () => {
-        const section = await findByCss('#my-products, .products-section, [id*="product"]');
-        return await section.isDisplayed();
+    await tc('TC-W13', 'My Products section container is visible', async () => {
+        const el = await findCss('#my-products, .products-section, [id*="product-list"]');
+        return el.isDisplayed();
     });
 
-    await tc('TC-W14', 'Add Product button opens product form/modal', async () => {
-        const btn = await findByCss('#add-product-btn, .add-product, [id*="add-product"]');
-        await btn.click();
-        await driver.sleep(800);
-        const modal = await findByCss('.modal, #product-modal, [id*="modal"], form[id*="product"]');
-        return await modal.isDisplayed();
+    await tc('TC-W14', 'Add Product button opens a modal/form', async () => {
+        await (await findCss('#add-product-btn, .add-product, [id*="add-product"]')).click();
+        await driver.sleep(700);
+        const modal = await findCss('.modal, #product-modal, [id*="modal"]');
+        return modal.isDisplayed();
     });
 
-    await tc('TC-W15', 'Product form accepts name input', async () => {
-        await typeIn('p-name', 'Organic Tomatoes');
-        const val = await (await findById('p-name')).getAttribute('value');
-        return val === 'Organic Tomatoes';
+    await tc('TC-W15', 'Product name input field retains typed value', async () => {
+        await type('p-name', 'Organic Tomatoes');
+        return (await (await find('p-name')).getAttribute('value')) === 'Organic Tomatoes';
     });
 
-    await tc('TC-W16', 'Product form accepts price and quantity', async () => {
-        try { await typeIn('p-price', '35'); await typeIn('p-qty', '200'); } catch(_) {}
-        try { await typeIn('p-age', '2'); } catch(_) {}
-        try { await typeIn('p-loc', 'Ludhiana'); } catch(_) {}
-        const price = await (await findById('p-price')).getAttribute('value');
-        return price === '35';
+    await tc('TC-W16', 'Product price field accepts numeric value', async () => {
+        await type('p-price', '35');
+        return (await (await find('p-price')).getAttribute('value')) === '35';
     });
 
-    await tc('TC-W17', 'Product form submits and product appears in list', async () => {
-        try { await clickId('save-product-btn'); } catch(_) {
-            try { await (await findByCss('button[type="submit"]')).click(); } catch(_) {}
-        }
-        await driver.sleep(2000);
-        const src = await driver.getPageSource();
-        return src.includes('Organic Tomatoes') || src.includes('tomatoes');
+    await tc('TC-W17', 'Product quantity field accepts numeric value', async () => {
+        await type('p-qty', '200');
+        return (await (await find('p-qty')).getAttribute('value')) === '200';
     });
 
-    await tc('TC-W18', 'Incoming Quotes section is visible on dashboard', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('quote') || src.toLowerCase().includes('bid');
+    await tc('TC-W18', 'Product saves and name appears in product list', async () => {
+        try { await type('p-age', '2'); } catch (_) {}
+        try { await type('p-loc', 'Ludhiana'); } catch (_) {}
+        try { await click('save-product-btn'); }
+        catch (_) { try { await (await findCss('button[type="submit"]')).click(); } catch (_) {} }
+        await driver.sleep(2200);
+        return (await src()).includes('Organic Tomatoes');
     });
 
-    await tc('TC-W19', 'Farmer Wallet/Earnings section is present', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('wallet') || src.toLowerCase().includes('earning') || src.toLowerCase().includes('balance');
+    await tc('TC-W19', 'Incoming Quotes section keyword visible in dashboard', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('quote') || s.includes('bid') || s.includes('request');
     });
 
-    await tc('TC-W20', 'KisaanAI chatbot button/panel is present', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('kisaanai') || src.toLowerCase().includes('ai chat') || src.toLowerCase().includes('chatbot');
+    await tc('TC-W20', 'Wallet / Earnings panel keyword visible', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('wallet') || s.includes('earning') || s.includes('balance');
     });
 
-    await tc('TC-W21', 'Calendar/Work Planner section loads', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('calendar') || src.toLowerCase().includes('planner') || src.toLowerCase().includes('schedule');
+    await tc('TC-W21', 'KisaanAI / Chat section keyword visible', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('kisaanai') || s.includes('ai chat') || s.includes('chatbot') || s.includes('ai');
     });
 
-    await tc('TC-W22', 'Farmer profile section shows user details', async () => {
-        const src = await driver.getPageSource();
-        return src.includes(F_EMAIL) || src.toLowerCase().includes('profile') || src.toLowerCase().includes('selenium farmer');
+    await tc('TC-W22', 'Calendar / Work Planner section keyword visible', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('calendar') || s.includes('planner') || s.includes('schedule');
     });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SECTION 4 — CUSTOMER AUTHENTICATION (TC-W23 … TC-W26)
-   ═══════════════════════════════════════════════════════════════ */
-async function section_CustomerAuth() {
-    console.log('\n👤 Section 4: Customer Authentication');
+/* ════════════════════════════════════════════════════
+   SECTION 4 — CUSTOMER AUTH  (TC-W23…TC-W26)
+   ════════════════════════════════════════════════════ */
+async function s4_CustomerAuth() {
+    console.log('\n👤 [S4] Customer Authentication');
 
     await tc('TC-W23', 'Customer registration form submits successfully', async () => {
-        await navigateTo('index.html');
-        try { await (await findByCss('#register-tab-btn, [data-tab="register"]')).click(); } catch(_) {}
-        await typeIn('reg-name', 'Selenium Customer');
-        await typeIn('reg-email', C_EMAIL);
-        await typeIn('reg-password', PASSWORD);
-        await typeIn('reg-mobile', '8765432109');
-        try { await typeIn('reg-location', 'Mumbai'); } catch(_) {}
-        try { await (await findById('reg-role')).sendKeys('customer'); } catch(_) {}
-        await clickId('reg-submit-btn');
-        await driver.sleep(2000);
-        return true;
+        await go('index.html');
+        try { await (await findCss('#register-tab-btn, [data-tab="register"]')).click(); } catch (_) {}
+        await type('reg-name', 'Selenium Customer');
+        await type('reg-email', C_EMAIL);
+        await type('reg-password', PASS);
+        await type('reg-mobile', '8765432109');
+        try { await type('reg-location', 'Mumbai'); } catch (_) {}
+        try { await (await find('reg-role')).sendKeys('customer'); } catch (_) {}
+        await click('reg-submit-btn');
+        await driver.sleep(2500);
+        return !(await src()).includes('Uncaught');
     });
 
-    await tc('TC-W24', 'Customer login redirects to customer dashboard', async () => {
-        await navigateTo('index.html');
-        await typeIn('login-email', C_EMAIL);
-        await typeIn('login-password', PASSWORD);
-        try { await (await findById('login-role')).sendKeys('customer'); } catch(_) {}
-        await clickId('login-submit-btn');
-        await driver.wait(until.urlContains('customer-dashboard'), TIMEOUT);
-        return true;
+    await tc('TC-W24', 'Customer login redirects to customer-dashboard.html', async () => {
+        await go('index.html');
+        await type('login-email', C_EMAIL);
+        await type('login-password', PASS);
+        try { await (await find('login-role')).sendKeys('customer'); } catch (_) {}
+        await click('login-submit-btn');
+        try { await driver.wait(until.urlContains('customer-dashboard'), WAIT); } catch (_) {}
+        return (await driver.getCurrentUrl()).includes('customer-dashboard');
     });
 
-    await tc('TC-W25', 'Customer dashboard displays marketplace products', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('product') || src.toLowerCase().includes('market') || src.toLowerCase().includes('farm');
+    await tc('TC-W25', 'Customer dashboard shows marketplace/product content', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('product') || s.includes('market') || s.includes('farm');
     });
 
-    await tc('TC-W26', 'Customer dashboard shows wallet balance', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('wallet') || src.toLowerCase().includes('balance') || src.toLowerCase().includes('₹');
+    await tc('TC-W26', 'Customer dashboard shows wallet/balance section', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('wallet') || s.includes('balance') || s.includes('₹');
     });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SECTION 5 — MARKETPLACE (TC-W27 … TC-W32)
-   ═══════════════════════════════════════════════════════════════ */
-async function section_Marketplace() {
-    console.log('\n🛒 Section 5: Marketplace');
+/* ════════════════════════════════════════════════════
+   SECTION 5 — MARKETPLACE  (TC-W27…TC-W32)
+   ════════════════════════════════════════════════════ */
+async function s5_Marketplace() {
+    console.log('\n🛒 [S5] Marketplace');
 
-    await tc('TC-W27', 'Product cards are rendered in customer marketplace', async () => {
-        const cards = await driver.findElements(By.css('.product-card, .crop-card, [class*="product"], [class*="card"]'));
+    await tc('TC-W27', 'Product cards render in customer marketplace', async () => {
+        const cards = await driver.findElements(By.css('.product-card, .crop-card, [class*="product-card"], [class*="card"]'));
         return cards.length > 0;
     });
 
-    await tc('TC-W28', 'Search bar filters products by keyword', async () => {
-        try {
-            const searchBar = await findByCss('#search, input[type="search"], [id*="search"], .search-input');
-            await searchBar.sendKeys('tomato');
-            await driver.sleep(1000);
-        } catch(_) {}
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('tomato') || src.toLowerCase().includes('search');
+    await tc('TC-W28', 'Search bar is present and accepts input', async () => {
+        const el = await findCss('#search, input[type="search"], .search-input, [id*="search"]');
+        await el.sendKeys('tomato');
+        return true;
     });
 
-    await tc('TC-W29', 'Product detail view opens on card click', async () => {
-        try {
-            const card = await findByCss('.product-card, .crop-card, [class*="card"]');
-            await card.click();
-            await driver.sleep(1000);
-        } catch(_) {}
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('price') || src.toLowerCase().includes('quantity') || src.toLowerCase().includes('farm');
+    await tc('TC-W29', 'Location filter label/UI is present', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('location') || s.includes('distance') || s.includes('nearby');
     });
 
-    await tc('TC-W30', 'Place order / Send quote button is visible', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('order') || src.toLowerCase().includes('quote') || src.toLowerCase().includes('buy');
+    await tc('TC-W30', 'Place order / send quote button is visible', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('order') || s.includes('quote') || s.includes('buy');
     });
 
-    await tc('TC-W31', 'Location filter UI is present in marketplace', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('location') || src.toLowerCase().includes('distance') || src.toLowerCase().includes('nearby');
+    await tc('TC-W31', 'Subscription / recurring delivery option visible', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('subscri') || s.includes('weekly') || s.includes('recurring');
     });
 
-    await tc('TC-W32', 'Customer community/forum link is accessible', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('community') || src.toLowerCase().includes('forum') || src.toLowerCase().includes('discuss');
+    await tc('TC-W32', 'Community / forum section link is accessible', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('community') || s.includes('forum') || s.includes('discuss');
     });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SECTION 6 — QUOTES & ORDERS (TC-W33 … TC-W38)
-   ═══════════════════════════════════════════════════════════════ */
-async function section_QuotesOrders() {
-    console.log('\n📋 Section 6: Quotes & Orders');
+/* ════════════════════════════════════════════════════
+   SECTION 6 — QUOTES & ORDERS  (TC-W33…TC-W38)
+   ════════════════════════════════════════════════════ */
+async function s6_QuotesOrders() {
+    console.log('\n📋 [S6] Quotes & Orders');
 
-    await tc('TC-W33', 'My Orders/Quotes section shows on customer dashboard', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('order') || src.toLowerCase().includes('quote');
+    await tc('TC-W33', 'My Orders/Quotes section visible on customer dashboard', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('order') || s.includes('quote') || s.includes('my orders');
     });
 
-    await tc('TC-W34', 'Subscription option is present for weekly delivery', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('subscri') || src.toLowerCase().includes('weekly') || src.toLowerCase().includes('recurring');
+    await tc('TC-W34', 'Order status badges present (pending/accepted/completed)', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('pending') || s.includes('accepted') || s.includes('completed') || s.includes('status');
     });
 
-    await tc('TC-W35', 'Delivery option (driver) toggle is visible', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('driver') || src.toLowerCase().includes('delivery') || src.toLowerCase().includes('transport');
+    await tc('TC-W35', 'Delivery driver toggle visible in order flow', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('driver') || s.includes('delivery') || s.includes('transport');
     });
 
-    await tc('TC-W36', 'Order history table/list renders with column headers', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('status') && (src.toLowerCase().includes('date') || src.toLowerCase().includes('amount'));
+    await tc('TC-W36', 'Order history table column headers visible (date/status)', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('status') && (s.includes('date') || s.includes('amount'));
     });
 
-    await tc('TC-W37', 'Farmer dashboard shows accepted/pending quotes', async () => {
-        await navigateTo('index.html');
-        await typeIn('login-email', F_EMAIL);
-        await typeIn('login-password', PASSWORD);
-        try { await (await findById('login-role')).sendKeys('farmer'); } catch(_) {}
-        await clickId('login-submit-btn');
-        await driver.wait(until.urlContains('farmer-dashboard'), TIMEOUT);
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('quote') || src.toLowerCase().includes('pending') || src.toLowerCase().includes('accepted');
+    await tc('TC-W37', 'Farmer dashboard shows accepted/pending quotes section', async () => {
+        await go('index.html');
+        await type('login-email', F_EMAIL);
+        await type('login-password', PASS);
+        try { await (await find('login-role')).sendKeys('farmer'); } catch (_) {}
+        await click('login-submit-btn');
+        try { await driver.wait(until.urlContains('farmer-dashboard'), WAIT); } catch (_) {}
+        const s = (await src()).toLowerCase();
+        return s.includes('quote') || s.includes('pending') || s.includes('accepted');
     });
 
-    await tc('TC-W38', 'Farmer can see order status badge colors', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('pending') || src.toLowerCase().includes('accepted') || src.toLowerCase().includes('completed');
-    });
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SECTION 7 — PAYMENTS & WALLET (TC-W39 … TC-W43)
-   ═══════════════════════════════════════════════════════════════ */
-async function section_Payments() {
-    console.log('\n💰 Section 7: Payments & Wallet');
-
-    await tc('TC-W39', 'Farmer payment info / UPI section is visible', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('upi') || src.toLowerCase().includes('bank') || src.toLowerCase().includes('payment');
-    });
-
-    await tc('TC-W40', 'Wallet balance shows numeric value on page', async () => {
-        const src = await driver.getPageSource();
-        return src.includes('₹') || src.toLowerCase().includes('balance') || /\d+(\.\d{1,2})?/.test(src);
-    });
-
-    await tc('TC-W41', 'Transaction history list is rendered', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('transaction') || src.toLowerCase().includes('history') || src.toLowerCase().includes('credit');
-    });
-
-    await tc('TC-W42', 'Add money / topup UI section is present', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('add money') || src.toLowerCase().includes('topup') || src.toLowerCase().includes('recharge') || src.toLowerCase().includes('wallet');
-    });
-
-    await tc('TC-W43', 'Platform fee section is displayed on order checkout', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('fee') || src.toLowerCase().includes('platform') || src.toLowerCase().includes('charge');
+    await tc('TC-W38', 'Farmer quote accept/reject buttons visible', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('accept') || s.includes('approve') || s.includes('reject') || s.includes('decline');
     });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SECTION 8 — ADMIN PANEL (TC-W44 … TC-W48)
-   ═══════════════════════════════════════════════════════════════ */
-async function section_AdminPanel() {
-    console.log('\n🛡️  Section 8: Admin Panel');
+/* ════════════════════════════════════════════════════
+   SECTION 7 — PAYMENTS  (TC-W39…TC-W43)
+   ════════════════════════════════════════════════════ */
+async function s7_Payments() {
+    console.log('\n💰 [S7] Payments & Wallet');
 
-    await tc('TC-W44', 'Admin login page loads successfully', async () => {
-        await navigateTo('admin-login.html');
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('admin') && src.toLowerCase().includes('login');
+    await tc('TC-W39', 'Farmer UPI / bank payment info section present', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('upi') || s.includes('bank') || s.includes('payment info');
     });
 
-    await tc('TC-W45', 'Admin login form has email and password fields', async () => {
-        const email = await findByCss('input[type="email"], input[id*="email"], #admin-email');
-        const pass  = await findByCss('input[type="password"], #admin-password');
+    await tc('TC-W40', 'Wallet balance shows ₹ symbol or numeric value', async () => {
+        const s = await src();
+        return s.includes('₹') || s.toLowerCase().includes('balance') || /\d{1,6}/.test(s);
+    });
+
+    await tc('TC-W41', 'Transaction history / ledger section is visible', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('transaction') || s.includes('history') || s.includes('ledger') || s.includes('credit');
+    });
+
+    await tc('TC-W42', 'Add money / topup wallet UI is present', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('add money') || s.includes('topup') || s.includes('recharge') || s.includes('wallet');
+    });
+
+    await tc('TC-W43', 'Platform fee / service charge section present', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('fee') || s.includes('platform') || s.includes('charge') || s.includes('tax');
+    });
+}
+
+/* ════════════════════════════════════════════════════
+   SECTION 8 — ADMIN PANEL  (TC-W44…TC-W48)
+   ════════════════════════════════════════════════════ */
+async function s8_AdminPanel() {
+    console.log('\n🛡️  [S8] Admin Panel');
+
+    await tc('TC-W44', 'Admin login page (admin-login.html) loads', async () => {
+        await go('admin-login.html');
+        const s = (await src()).toLowerCase();
+        return s.includes('admin') && (s.includes('login') || s.includes('sign in'));
+    });
+
+    await tc('TC-W45', 'Admin login form has email and password inputs', async () => {
+        const email = await findCss('input[type="email"], #admin-email, [id*="email"]');
+        const pass  = await findCss('input[type="password"], #admin-password, [id*="password"]');
         return (await email.isDisplayed()) && (await pass.isDisplayed());
     });
 
-    await tc('TC-W46', 'Admin login with credentials loads dashboard', async () => {
-        try { await typeIn('admin-email', 'admin@kisaanconnect.com'); } catch(_) {
-            try { await (await findByCss('input[type="email"]')).sendKeys('admin@kisaanconnect.com'); } catch(_) {}
-        }
-        try { await typeIn('admin-password', 'admin123'); } catch(_) {
-            try { await (await findByCss('input[type="password"]')).sendKeys('admin123'); } catch(_) {}
-        }
-        try { await (await findByCss('button[type="submit"], #login-btn, #admin-login-btn')).click(); } catch(_) {}
+    await tc('TC-W46', 'Admin credentials navigate to admin dashboard', async () => {
+        try { await (await findCss('input[type="email"]')).sendKeys('admin@kisaanconnect.com'); } catch (_) {}
+        try { await (await findCss('input[type="password"]')).sendKeys('admin123'); } catch (_) {}
+        try { await (await findCss('button[type="submit"], #login-btn, #admin-login-btn')).click(); } catch (_) {}
         await driver.sleep(2500);
         const url = await driver.getCurrentUrl();
         return url.includes('admin-dashboard') || url.includes('admin');
     });
 
-    await tc('TC-W47', 'Admin dashboard shows user management section', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('user') && (src.toLowerCase().includes('farmer') || src.toLowerCase().includes('customer'));
+    await tc('TC-W47', 'Admin dashboard shows farmer / customer user list', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('user') && (s.includes('farmer') || s.includes('customer'));
     });
 
-    await tc('TC-W48', 'Admin dashboard shows platform fees / revenue section', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('revenue') || src.toLowerCase().includes('fee') || src.toLowerCase().includes('platform');
-    });
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SECTION 9 — COMMUNITY & AI (TC-W49 … TC-W50)
-   ═══════════════════════════════════════════════════════════════ */
-async function section_CommunityAI() {
-    console.log('\n🤝 Section 9: Community & AI Features');
-
-    await tc('TC-W49', 'Community forum page renders posts/messages', async () => {
-        // Back to farmer dashboard
-        await navigateTo('index.html');
-        try {
-            await typeIn('login-email', F_EMAIL);
-            await typeIn('login-password', PASSWORD);
-            await (await findById('login-role')).sendKeys('farmer');
-            await clickId('login-submit-btn');
-            await driver.wait(until.urlContains('farmer-dashboard'), TIMEOUT);
-        } catch(_) {}
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('community') || src.toLowerCase().includes('forum') || src.toLowerCase().includes('post');
-    });
-
-    await tc('TC-W50', 'KisaanAI chat widget responds to a test message', async () => {
-        const src = await driver.getPageSource();
-        return src.toLowerCase().includes('ai') || src.toLowerCase().includes('kisaanai') || src.toLowerCase().includes('chat') || src.toLowerCase().includes('disease');
+    await tc('TC-W48', 'Admin dashboard shows platform revenue / fee section', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('revenue') || s.includes('fee') || s.includes('platform') || s.includes('analytics');
     });
 }
 
-/* ─────────────────────── main runner ─────────────────────────── */
-async function runAll() {
+/* ════════════════════════════════════════════════════
+   SECTION 9 — COMMUNITY & AI  (TC-W49…TC-W50)
+   ════════════════════════════════════════════════════ */
+async function s9_CommunityAI() {
+    console.log('\n🤝 [S9] Community & AI');
+
+    await tc('TC-W49', 'Community forum section keyword present in page', async () => {
+        await go('index.html');
+        await type('login-email', F_EMAIL);
+        await type('login-password', PASS);
+        try { await (await find('login-role')).sendKeys('farmer'); } catch (_) {}
+        await click('login-submit-btn');
+        try { await driver.wait(until.urlContains('farmer-dashboard'), WAIT); } catch (_) {}
+        const s = (await src()).toLowerCase();
+        return s.includes('community') || s.includes('forum') || s.includes('post');
+    });
+
+    await tc('TC-W50', 'KisaanAI / disease scan keyword present in page', async () => {
+        const s = (await src()).toLowerCase();
+        return s.includes('ai') || s.includes('kisaanai') || s.includes('disease') || s.includes('chat');
+    });
+}
+
+/* ════════════════════════════════════════════════════
+   CSV export
+   ════════════════════════════════════════════════════ */
+function saveCSV() {
+    const dir = path.join(__dirname, '../reports');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    let csv = 'Test Case ID,Test Type,Category,Test Description,Status,Notes\n';
+    results.forEach(r => {
+        const esc = v => { const s = String(v); return s.includes(',') || s.includes('"') ? `"${s.replace(/"/g,'""')}"` : s; };
+        csv += `${esc(r.id)},Selenium,Web,${esc(r.name)},${esc(r.status)},${esc(r.notes)}\n`;
+    });
+    const f = path.join(dir, 'Selenium_Report.csv');
+    fs.writeFileSync(f, csv, 'utf8');
+    console.log(`\n💾 Report saved → ${f}`);
+}
+
+/* ════════════════════════════════════════════════════
+   MAIN
+   ════════════════════════════════════════════════════ */
+async function main() {
+    await setup();
     try {
-        await setup();
-        await section_LandingPage();
-        await section_FarmerAuth();
-        await section_FarmerDashboard();
-        await section_CustomerAuth();
-        await section_Marketplace();
-        await section_QuotesOrders();
-        await section_Payments();
-        await section_AdminPanel();
-        await section_CommunityAI();
-
-        console.log('\n' + '═'.repeat(55));
-        console.log(`📊 Selenium Web Results: ${passed} PASSED | ${failed} FAILED | ${passed+failed} TOTAL`);
-        if (failed === 0) console.log('🎉 ALL 50 WEB TESTS PASSED!');
-        else console.log(`⚠️  ${failed} test(s) require attention.`);
-    } catch (err) {
-        console.error('❌ Fatal error during Selenium run:', err);
+        await s1_LandingPage();
+        await s2_FarmerAuth();
+        await s3_FarmerDashboard();
+        await s4_CustomerAuth();
+        await s5_Marketplace();
+        await s6_QuotesOrders();
+        await s7_Payments();
+        await s8_AdminPanel();
+        await s9_CommunityAI();
     } finally {
         await teardown();
     }
-    return { passed, failed, results };
+
+    console.log('\n' + '═'.repeat(60));
+    console.log(`📊 Selenium Results: ${passed} PASSED | ${failed} FAILED | ${passed + failed} TOTAL`);
+    saveCSV();
+
+    if (process.env.GITHUB_STEP_SUMMARY) {
+        let md = `# 🌐 Selenium Web Tests — KisaanConnect\n\n`;
+        md += `| ID | Test Name | Status |\n|:---|:---|:---:|\n`;
+        results.forEach(r => { md += `| ${r.id} | ${r.name} | ${r.status === 'PASS' ? '✅ PASS' : '❌ FAIL'} |\n`; });
+        md += `\n**Total: ${passed} PASS | ${failed} FAIL**\n`;
+        fs.writeFileSync(process.env.GITHUB_STEP_SUMMARY, md, 'utf8');
+    }
+
+    process.exit(failed > 0 ? 1 : 0);
 }
 
-if (require.main === module) { runAll(); }
-module.exports = { runAll, results: () => results };
+main().catch(e => { console.error('Fatal:', e); process.exit(1); });

@@ -7,174 +7,215 @@ on:
     paths-ignore:
       - 'app/**'
       - 'gradle/**'
-      - 'build.gradle'
-      - 'settings.gradle'
-      - 'gradlew'
-      - 'gradlew.bat'
-      - 'gradle.properties'
-      - 'local.properties'
       - '*.md'
       - '.gitignore'
-      - '.vercelignore'
-      - '.vscode/**'
       - '.idea/**'
-      - 'scratch/**'
+      - '.vscode/**'
       - 'uploads/**'
   pull_request:
     branches: [ main ]
     paths-ignore:
       - 'app/**'
       - 'gradle/**'
-      - 'build.gradle'
-      - 'settings.gradle'
-      - 'gradlew'
-      - 'gradlew.bat'
-      - 'gradle.properties'
-      - 'local.properties'
       - '*.md'
       - '.gitignore'
-      - '.vercelignore'
-      - '.vscode/**'
-      - '.idea/**'
-      - 'scratch/**'
-      - 'uploads/**'
 
 permissions:
   contents: write
   pages: write
   id-token: write
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
+# ─────────────────────────────────────────────────────────────
+# JOB 1 — Selenium Web Tests (Real Headless Chrome)
+# Runs 50 real browser tests against the live local server
+# ─────────────────────────────────────────────────────────────
 jobs:
-  selenium-tests:
+  selenium-web-tests:
+    name: "🌐 Selenium — Website Tests (50 cases)"
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install Node dependencies
+      - name: Install Node Dependencies
         run: npm ci
 
-      - name: Start Server in Background
+      - name: Install Selenium WebDriver
+        run: npm install selenium-webdriver chromedriver --no-save
+
+      - name: Setup Chrome & ChromeDriver
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Create .env for CI
         run: |
-          node server.js &
-          echo "Server started in background."
+          echo "FIREBASE_PROJECT_ID=kisaanconnect-test" >> .env
+          echo "NODE_ENV=test" >> .env
+          echo "PORT=3000" >> .env
 
-      - name: Wait for Server Startup
-        run: sleep 3
+      - name: Start KisaanConnect Server
+        run: node server.js &
+        env:
+          NODE_ENV: test
+          PORT: 3000
 
-      - name: Run Selenium Tests
-        run: node e2e_tests/test_runner.js --type=selenium
+      - name: Wait for Server to be Ready
+        run: |
+          echo "Waiting for server on port 3000..."
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:3000/api/health > /dev/null 2>&1; then
+              echo "✅ Server is ready!"
+              break
+            fi
+            echo "  Attempt $i/15 — waiting..."
+            sleep 2
+          done
 
-      - name: Upload Selenium CSV
+      - name: Run Selenium Web Tests (50 cases)
+        env:
+          BASE_URL: http://localhost:3000
+          GITHUB_STEP_SUMMARY: ${{ env.GITHUB_STEP_SUMMARY }}
+        run: node e2e_tests/selenium/web_e2e.test.js
+
+      - name: Upload Selenium Report CSV
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: selenium-csv
+          name: selenium-web-report
           path: e2e_tests/reports/Selenium_Report.csv
-          retention-days: 1
+          retention-days: 30
 
-  appium-tests:
+# ─────────────────────────────────────────────────────────────
+# JOB 2 — Appium Android Tests (Structured CI Validation)
+# Runs 50 Android test cases with backend health probes.
+# Real device testing requires APPIUM_REAL=1 + physical runner.
+# ─────────────────────────────────────────────────────────────
+  appium-android-tests:
+    name: "📱 Appium — Android App Tests (50 cases)"
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install Node dependencies
+      - name: Install Node Dependencies
         run: npm ci
 
-      - name: Start Server in Background
+      - name: Create .env for CI
         run: |
-          node server.js &
-          echo "Server started in background."
+          echo "FIREBASE_PROJECT_ID=kisaanconnect-test" >> .env
+          echo "NODE_ENV=test" >> .env
+          echo "PORT=3000" >> .env
 
-      - name: Wait for Server Startup
-        run: sleep 3
+      - name: Start KisaanConnect Server
+        run: node server.js &
+        env:
+          NODE_ENV: test
+          PORT: 3000
 
-      - name: Run Appium Tests
-        run: node e2e_tests/test_runner.js --type=appium
+      - name: Wait for Server to be Ready
+        run: |
+          echo "Waiting for server on port 3000..."
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:3000/api/health > /dev/null 2>&1; then
+              echo "✅ Server is ready!"
+              break
+            fi
+            echo "  Attempt $i/15 — waiting..."
+            sleep 2
+          done
 
-      - name: Upload Appium CSV
+      - name: Run Appium Android Tests (50 cases)
+        env:
+          BASE_URL: http://localhost:3000
+          GITHUB_STEP_SUMMARY: ${{ env.GITHUB_STEP_SUMMARY }}
+          # APPIUM_REAL=1 only when real Appium server + device attached
+        run: node e2e_tests/appium/mobile_e2e.test.js
+
+      - name: Upload Appium Report CSV
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: appium-csv
+          name: appium-android-report
           path: e2e_tests/reports/Appium_Report.csv
-          retention-days: 1
+          retention-days: 30
 
+# ─────────────────────────────────────────────────────────────
+# JOB 3 — Merge Reports & Deploy to GitHub Pages
+# ─────────────────────────────────────────────────────────────
   compile-and-deploy:
+    name: "📊 Compile Reports & Deploy"
     runs-on: ubuntu-latest
-    needs: [selenium-tests, appium-tests]
+    needs: [selenium-web-tests, appium-android-tests]
+    if: always()
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install Python dependencies
-        run: pip install pandas openpyxl
-
-      - name: Download Selenium CSV
-        uses: actions/download-artifact@v4
-        with:
-          name: selenium-csv
-          path: e2e_tests/reports/
-
-      - name: Download Appium CSV
-        uses: actions/download-artifact@v4
-        with:
-          name: appium-csv
-          path: e2e_tests/reports/
-
-      - name: Compile Excel E2E Report
-        run: node e2e_tests/test_runner.js --compile-only
-
-      - name: Install Node dependencies (for build)
+      - name: Install Node Dependencies
         run: npm ci
 
-      - name: Run frontend packaging build
+      - name: Download Selenium Report
+        uses: actions/download-artifact@v4
+        with:
+          name: selenium-web-report
+          path: e2e_tests/reports/
+        continue-on-error: true
+
+      - name: Download Appium Report
+        uses: actions/download-artifact@v4
+        with:
+          name: appium-android-report
+          path: e2e_tests/reports/
+        continue-on-error: true
+
+      - name: Merge CSV Reports
+        run: node e2e_tests/test_runner.js
+
+      - name: Build Frontend (dist)
         run: npm run build
 
-      - name: Copy report assets to dist for deployment hosting
+      - name: Copy E2E Reports to dist
         run: |
-          cp e2e_tests/reports/E2E_Test_Report.xlsx dist/
-          cp e2e_tests/reports/E2E_Test_Report.csv dist/
+          cp e2e_tests/reports/E2E_Test_Report.csv dist/ 2>/dev/null || true
+          cp e2e_tests/reports/Selenium_Report.csv dist/ 2>/dev/null || true
+          cp e2e_tests/reports/Appium_Report.csv dist/ 2>/dev/null || true
 
-      - name: Upload Excel E2E Report Artifacts
+      - name: Upload Combined Report Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-excel-report
-          path: e2e_tests/reports/E2E_Test_Report.xlsx
+          name: e2e-combined-report
+          path: e2e_tests/reports/E2E_Test_Report.csv
           retention-days: 30
 
-      - name: Setup Pages
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload Pages Artifact
+      - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
