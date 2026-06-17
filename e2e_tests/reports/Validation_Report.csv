@@ -4,7 +4,7 @@ TC-V02,Validation,Input Validation,Signup without name returns error,PASS,Status
 TC-V03,Validation,Input Validation,Signup without password returns error,PASS,Status:400
 TC-V04,Validation,Input Validation,Login without email returns error,PASS,Status:400
 TC-V05,Validation,Input Validation,Login without password returns error,PASS,Status:400
-TC-V06,Validation,Input Validation,First signup with unique email succeeds,PASS,id:39
+TC-V06,Validation,Input Validation,First signup with unique email succeeds,PASS,id:2
 TC-V07,Validation,Input Validation,Duplicate signup with same email returns error/conflict,PASS,"Status:400 — body:{""success"":false,""message"":""Email already exists."""
 TC-V08,Validation,Input Validation,Product without name returns error,PASS,Status:400
 TC-V09,Validation,Input Validation,Product without price returns error,PASS,Status:400

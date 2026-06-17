@@ -199,17 +199,21 @@ async function updateUser(id, data) {
         return getUserById(id);
     }
     const user = memDb.users.get(String(id));
-    if (user) {
-        const updated = { ...user, ...data };
-        memDb.users.set(String(id), updated);
+    if (!user) {
+        throw new Error('NOT_FOUND: No document to update: users/' + id);
     }
-    return memDb.users.get(String(id)) || null;
+    const updated = { ...user, ...data };
+    memDb.users.set(String(id), updated);
+    return updated;
 }
 
 async function deleteUser(id) {
     if (initialized) {
         await db.collection('users').doc(String(id)).delete();
         return;
+    }
+    if (!memDb.users.has(String(id))) {
+        throw new Error('NOT_FOUND: No document to delete: users/' + id);
     }
     memDb.users.delete(String(id));
 }
@@ -268,15 +272,19 @@ async function updateProduct(id, data) {
         return;
     }
     const p = memDb.products.get(String(id));
-    if (p) {
-        memDb.products.set(String(id), { ...p, ...data });
+    if (!p) {
+        throw new Error('NOT_FOUND: No document to update: products/' + id);
     }
+    memDb.products.set(String(id), { ...p, ...data });
 }
 
 async function deleteProduct(id) {
     if (initialized) {
         await db.collection('products').doc(String(id)).delete();
         return;
+    }
+    if (!memDb.products.has(String(id))) {
+        throw new Error('NOT_FOUND: No document to delete: products/' + id);
     }
     memDb.products.delete(String(id));
 }
@@ -334,9 +342,10 @@ async function updateOrder(id, data) {
         return;
     }
     const o = memDb.orders.get(String(id));
-    if (o) {
-        memDb.orders.set(String(id), { ...o, ...data });
+    if (!o) {
+        throw new Error('NOT_FOUND: No document to update: orders/' + id);
     }
+    memDb.orders.set(String(id), { ...o, ...data });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -389,23 +398,24 @@ async function updateQuote(id, data) {
         return;
     }
     const q = memDb.quotes.get(String(id));
-    if (q) {
-        const updated = { ...q, ...data };
-        memDb.quotes.set(String(id), updated);
-        if (data.status === 'yes') {
-            await createOrder({
-                productId: q.productId,
-                productName: q.productName,
-                farmerId: q.farmerId,
-                farmerName: q.farmerName,
-                customerId: q.customerId,
-                customerName: q.customerName,
-                quantity: q.quantity,
-                price: q.offerPrice,
-                status: 'pending',
-                needDriver: q.needDriver || false
-            });
-        }
+    if (!q) {
+        throw new Error('NOT_FOUND: No document to update: quotes/' + id);
+    }
+    const updated = { ...q, ...data };
+    memDb.quotes.set(String(id), updated);
+    if (data.status === 'yes') {
+        await createOrder({
+            productId: q.productId,
+            productName: q.productName,
+            farmerId: q.farmerId,
+            farmerName: q.farmerName,
+            customerId: q.customerId,
+            customerName: q.customerName,
+            quantity: q.quantity,
+            price: q.offerPrice,
+            status: 'pending',
+            needDriver: q.needDriver || false
+        });
     }
 }
 
@@ -458,9 +468,10 @@ async function updateSubscription(id, data) {
         return;
     }
     const s = memDb.subscriptions.get(String(id));
-    if (s) {
-        memDb.subscriptions.set(String(id), { ...s, ...data });
+    if (!s) {
+        throw new Error('NOT_FOUND: No document to update: subscriptions/' + id);
     }
+    memDb.subscriptions.set(String(id), { ...s, ...data });
 }
 
 async function deleteSubscription(id) {
@@ -468,6 +479,9 @@ async function deleteSubscription(id) {
         await db.collection('subscriptions').doc(String(id)).delete();
         cacheInvalidate('subs:');
         return;
+    }
+    if (!memDb.subscriptions.has(String(id))) {
+        throw new Error('NOT_FOUND: No document to delete: subscriptions/' + id);
     }
     memDb.subscriptions.delete(String(id));
 }
