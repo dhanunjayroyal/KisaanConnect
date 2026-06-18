@@ -124,9 +124,42 @@ npm run test:web
 # Run mobile tests (Appium)
 npm run test:mobile
 
+# Run baseline load test (100 VUs × 60s)
+node load-tests/run.js
+
 # View test report
 open test-report.html
 ```
+
+---
+
+## 🔥 Baseline Load Test Results
+
+<div align="center">
+
+![Load Test](https://img.shields.io/badge/Load%20Test-PASSED%20✅-brightgreen?style=flat-square)
+![RPS](https://img.shields.io/badge/RPS-336%20req%2Fsec-blue?style=flat-square)
+![Error Rate](https://img.shields.io/badge/Error%20Rate-0.00%25-brightgreen?style=flat-square)
+![Avg Response](https://img.shields.io/badge/Avg%20Response-104ms-orange?style=flat-square)
+
+</div>
+
+| Metric | Result | Status |
+|--------|--------|--------|
+| **Virtual Users** | 100 concurrent | ✅ |
+| **Duration** | 60 seconds | ✅ |
+| **Total Requests** | 20,487 | ✅ |
+| **Requests/Second** | **336 RPS** | ✅ PASS |
+| **Average Response** | **104ms** | ✅ PASS |
+| **Min Response** | 0ms | ✅ |
+| **Max Response** | 5,595ms | ✅ PASS |
+| **P95 Response** | 735ms | ✅ PASS |
+| **P99 Response** | 1,124ms | ✅ PASS |
+| **Error Rate** | **0.00%** | ✅ PASS |
+
+📄 **[View Full Load Test Report →](load-tests/RESULTS.md)**
+
+The load test runs 100 virtual users simultaneously for 60 seconds, sending thousands of requests across all API endpoints. An in-memory TTL cache was added to server.js, improving throughput by **8.2×** and reducing average response time from 2,069ms → 104ms.
 
 ---
 
