@@ -40,10 +40,13 @@ test_script_*.js
 # ── Logs ──────────────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
-load-tests/reports/
 load-tests/server.log
 load-tests/_check.js
 load-tests/_diag.js
+load-tests/COMMIT_MSG.txt
+# Allow only the latest baseline Excel result (small, focused report)
+!load-tests/reports/
+!load-tests/reports/*.xlsx
 
 # ── OS ────────────────────────────────────────────────────────────────────
 .DS_Store
