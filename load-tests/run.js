@@ -58,6 +58,16 @@ async function main() {
   try {
     const filePath = await generateExcelReport(stats);
     console.log(`\n  ✅  Excel report saved to:\n      ${filePath}\n`);
+
+    // Copy to User's Downloads directory if accessible
+    const downloadsDir = 'C:\\Users\\DHANUNJAY\\Downloads';
+    if (fs.existsSync(downloadsDir)) {
+      const fileName = path.basename(filePath);
+      const destPath = path.join(downloadsDir, fileName);
+      fs.copyFileSync(filePath, destPath);
+      console.log(`  📂  Also copied report to your Downloads folder:\n      ${destPath}\n`);
+    }
+
     console.log('  📂  Open the file to view all 5 sheets:\n');
     console.log('      1. 📊 Summary        — overall metrics & pass/fail');
     console.log('      2. 🔗 Endpoints      — per-API breakdown');

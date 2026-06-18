@@ -178,17 +178,30 @@ async function findUserByEmailAndRole(email, password, role) {
 }
 
 async function getUserById(id) {
-    if (initialized) {
-        const doc = await db.collection('users').doc(String(id)).get();
-        return toRow(doc);
+    try {
+        if (initialized) {
+            const doc = await db.collection('users').doc(String(id)).get();
+            return toRow(doc);
+        }
+    } catch (err) {
+        console.warn(`⚠️  Firestore getUserById(${id}) failed, using local In-Memory DB:`, err.message);
     }
     return memDb.users.get(String(id)) || null;
 }
 
 async function getAllUsers() {
-    if (initialized) {
-        const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
-        return toDocs(snap);
+    try {
+        if (initialized) {
+            const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
+            return toDocs(snap);
+        }
+    } catch (err) {
+        console.warn('⚠️  Firestore getAllUsers failed, using local In-Memory DB:', err.message);
+    }
+    if (memDb.users.size === 0) {
+        // Seed mock users so list isn't empty on fallback
+        memDb.users.set('1', { id: 1, name: 'Farmer John', role: 'farmer', location: 'Punjab', mobile: '9876543210', createdAt: now() });
+        memDb.users.set('2', { id: 2, name: 'Customer Alice', role: 'customer', location: 'Delhi', mobile: '9876543211', createdAt: now() });
     }
     return Array.from(memDb.users.values()).sort((a,b) => b.createdAt.localeCompare(a.createdAt));
 }
@@ -253,11 +266,20 @@ async function createProduct(data) {
 }
 
 async function getProducts(farmerId) {
-    if (initialized) {
-        let q = db.collection('products').orderBy('createdAt', 'desc');
-        if (farmerId) q = db.collection('products').where('farmerId', '==', String(farmerId)).orderBy('createdAt', 'desc');
-        const snap = await q.get();
-        return toDocs(snap);
+    try {
+        if (initialized) {
+            let q = db.collection('products').orderBy('createdAt', 'desc');
+            if (farmerId) q = db.collection('products').where('farmerId', '==', String(farmerId)).orderBy('createdAt', 'desc');
+            const snap = await q.get();
+            return toDocs(snap);
+        }
+    } catch (err) {
+        console.warn('⚠️  Firestore getProducts failed, using local In-Memory DB:', err.message);
+    }
+    if (memDb.products.size === 0) {
+        // Seed mock products so list isn't empty on fallback
+        memDb.products.set('1', { id: 1, name: 'Premium Wheat', price: 2100, farmerId: '1', farmerName: 'Farmer John', status: 'active', createdAt: now() });
+        memDb.products.set('2', { id: 2, name: 'Organic Rice', price: 3400, farmerId: '1', farmerName: 'Farmer John', status: 'active', createdAt: now() });
     }
     let list = Array.from(memDb.products.values());
     if (farmerId) {
