@@ -12,6 +12,7 @@
 const { runLoadTest }        = require('./load_test');
 const { generateExcelReport } = require('./generate_report');
 const path = require('path');
+const fs = require('fs');
 
 async function main() {
   console.log('\n══════════════════════════════════════════════════════════');
@@ -65,6 +66,31 @@ async function main() {
     console.log('      5. 📋 Raw Log        — individual request records\n');
   } catch (err) {
     console.error('  ❌  Failed to generate Excel report:', err.message);
+  }
+
+  // 4. Generate CSV report for Master E2E integration
+  console.log('  📝  Generating Load_Report.csv for E2E master summary...');
+  try {
+    const csvDir = path.join(__dirname, '..', 'e2e_tests', 'reports');
+    if (!fs.existsSync(csvDir)) fs.mkdirSync(csvDir, { recursive: true });
+    
+    const tcL01Status = summary.totalRequests > 0 ? 'PASS' : 'FAIL';
+    const tcL02Status = summary.avgResponseMs < 2000 ? 'PASS' : 'FAIL';
+    const tcL03Status = summary.p95Ms < 8000 ? 'PASS' : 'FAIL';
+    const tcL04Status = parseFloat(summary.errorRate) < 1.0 ? 'PASS' : 'FAIL';
+
+    const csvContent = [
+      'Test Case ID,Test Type,Category,Test Description,Status,Notes',
+      `TC-L01,Load Test,Performance,System handles 100 concurrent virtual users for 60s,${tcL01Status},"RPS: ${summary.requestsPerSecond} RPS (Total: ${summary.totalRequests})"`,
+      `TC-L02,Load Test,Performance,Average response time is within SLA limit (<2000ms),${tcL02Status},"Avg: ${summary.avgResponseMs}ms (Limit: 2000ms)"`,
+      `TC-L03,Load Test,Performance,P95 response time is within SLA limit (<8000ms),${tcL03Status},"P95: ${summary.p95Ms}ms (Limit: 8000ms)"`,
+      `TC-L04,Load Test,Performance,Error rate is within SLA limit (<1%),${tcL04Status},"Error Rate: ${summary.errorRate}% (Limit: 1.0%)"`
+    ].join('\n') + '\n';
+
+    fs.writeFileSync(path.join(csvDir, 'Load_Report.csv'), csvContent, 'utf8');
+    console.log('  ✅  Load_Report.csv saved to e2e_tests/reports/\n');
+  } catch (err) {
+    console.error('  ❌  Failed to generate Load_Report.csv:', err.message);
   }
 
   console.log('══════════════════════════════════════════════════════════\n');
