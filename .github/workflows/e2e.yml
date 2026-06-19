@@ -26,10 +26,10 @@ permissions:
 jobs:
 
 # ═══════════════════════════════════════════════════════════
-# JOB 1 — Selenium Web Tests (50 cases)
+# JOB 1 — Selenium Web Tests (300 cases)
 # ═══════════════════════════════════════════════════════════
   selenium-web-tests:
-    name: "🌐 Selenium — Website Tests (50)"
+    name: "🌐 Selenium — Website Tests (300)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -65,7 +65,7 @@ jobs:
             echo "  ⏳ Waiting... ($i/20)"; sleep 3
           done
 
-      - name: Run Selenium Web Tests (50 cases)
+      - name: Run Selenium Web Tests (300 cases)
         env:
           BASE_URL: http://localhost:3000
         run: node e2e_tests/selenium/web_e2e.test.js
@@ -79,10 +79,10 @@ jobs:
           retention-days: 30
 
 # ═══════════════════════════════════════════════════════════
-# JOB 2 — Appium Android Tests (50 cases)
+# JOB 2 — Appium Android Tests (300 cases)
 # ═══════════════════════════════════════════════════════════
   appium-android-tests:
-    name: "📱 Appium — Android Tests (50)"
+    name: "📱 Appium — Android Tests (300)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -110,7 +110,7 @@ jobs:
             echo "  ⏳ Waiting... ($i/20)"; sleep 3
           done
 
-      - name: Run Appium Android Tests (50 cases)
+      - name: Run Appium Android Tests (300 cases)
         env:
           BASE_URL: http://localhost:3000
         run: node e2e_tests/appium/mobile_e2e.test.js
@@ -124,10 +124,10 @@ jobs:
           retention-days: 30
 
 # ═══════════════════════════════════════════════════════════
-# JOB 3 — Unit Tests (30 cases)
+# JOB 3 — Unit Tests (300 cases)
 # ═══════════════════════════════════════════════════════════
   unit-tests:
-    name: "🔬 Unit Tests — API (50)"
+    name: "🔬 Unit Tests — API (300)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -155,7 +155,7 @@ jobs:
             echo "  ⏳ Waiting... ($i/20)"; sleep 3
           done
 
-      - name: Run Unit Tests (30 cases)
+      - name: Run Unit Tests (300 cases)
         run: node e2e_tests/unit/unit_tests.js
 
       - name: Upload Unit CSV Report
@@ -167,10 +167,10 @@ jobs:
           retention-days: 30
 
 # ═══════════════════════════════════════════════════════════
-# JOB 4 — Validation Tests (25 cases)
+# JOB 4 — Validation Tests (300 cases)
 # ═══════════════════════════════════════════════════════════
   validation-tests:
-    name: "✅ Validation Tests (40)"
+    name: "✅ Validation Tests (300)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -198,7 +198,7 @@ jobs:
             echo "  ⏳ Waiting... ($i/20)"; sleep 3
           done
 
-      - name: Run Validation Tests (25 cases)
+      - name: Run Validation Tests (300 cases)
         run: node e2e_tests/validation/validation_tests.js
 
       - name: Upload Validation CSV Report
@@ -210,10 +210,10 @@ jobs:
           retention-days: 30
 
 # ═══════════════════════════════════════════════════════════
-# JOB 5 — Deployment Status Tests (15 cases)
+# JOB 5 — Deployment Status Tests (300 cases)
 # ═══════════════════════════════════════════════════════════
   deployment-tests:
-    name: "🚀 Deployment Status (15)"
+    name: "🚀 Deployment Status (300)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -244,7 +244,7 @@ jobs:
             echo "  ⏳ Waiting... ($i/20)"; sleep 3
           done
 
-      - name: Run Deployment Status Tests (15 cases)
+      - name: Run Deployment Status Tests (300 cases)
         env:
           RENDER_URL: ${{ secrets.RENDER_URL }}
           VERCEL_URL: ${{ secrets.VERCEL_URL }}
@@ -259,10 +259,10 @@ jobs:
           retention-days: 30
 
 # ═══════════════════════════════════════════════════════════
-# JOB 5b — Load Testing (4 cases)
+# JOB 5b — Load Testing (300 cases)
 # ═══════════════════════════════════════════════════════════
   load-tests:
-    name: "📊 Load Testing — Performance (4)"
+    name: "📊 Load Testing — Performance (300)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

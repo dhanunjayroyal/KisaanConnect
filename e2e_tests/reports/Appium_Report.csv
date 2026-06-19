@@ -1,51 +1,301 @@
 Test Case ID,Test Type,Category,Test Description,Status,Notes
-TC-M01,Appium,Android,App launches — MainActivity visible,PASS,getCurrentActivity confirms MainActivity.
-TC-M02,Appium,Android,KisaanConnect splash/logo displayed on launch,PASS,"Page source contains ""kisaan"" or logo element."
-TC-M03,Appium,Android,Role selection shows Farmer & Customer options,PASS,Both role labels found in page source.
-TC-M04,Appium,Android,No unexpected permission dialogs block UI,PASS,autoGrantPermissions=true; UI not blocked.
-TC-M05,Appium,Android,Login screen renders within 8 seconds of start,PASS,waitUntil login keyword visible within 8s.
-TC-M06,Appium,Android,App defaults to English language,PASS,Login/Email/Password labels in English.
-TC-M07,Appium,Android,Native login screen shows email & password,PASS,Both input fields found in page source.
-TC-M08,Appium,Android,Register link opens farmer sign-up form,PASS,Register form rendered after link tap.
-TC-M09,Appium,Android,Farmer registration fields accept valid input,PASS,Fields populated via WebView setValue.
-TC-M10,Appium,Android,Farmer login opens farmer dashboard,PASS,URL changes to farmer-dashboard after login.
-TC-M11,Appium,Android,Invalid credentials show error toast,PASS,"""invalid""/""error"" keyword after bad login."
-TC-M12,Appium,Android,Session persists after app background/resume,PASS,client.background(3); no crash on resume.
-TC-M13,Appium,Android,Farmer dashboard home visible after login,PASS,"""farmer""/""dashboard"" in page source."
-TC-M14,Appium,Android,Hamburger drawer menu opens on tap,PASS,Menu/Nav content visible after tap.
-TC-M15,Appium,Android,My Products section shows crop cards,PASS,"""product""/""crop"" keyword in source."
-TC-M16,Appium,Android,Add Product button is tappable on mobile,PASS,Element tapped without exception.
-TC-M17,Appium,Android,Product form modal renders on mobile screen,PASS,"""name"" and ""price"" fields visible in modal."
-TC-M18,Appium,Android,Camera/upload option available for product image,PASS,"""photo""/""camera"" keyword in page source."
-TC-M19,Appium,Android,Incoming quotes list loads in farmer dashboard,PASS,"""quote""/""bid"" found in page source."
-TC-M20,Appium,Android,Accept quote button present and tappable,PASS,"""accept""/""approve"" found in source."
-TC-M21,Appium,Android,Farmer wallet/earnings balance shown,PASS,"""₹""/""wallet""/""balance"" in source."
-TC-M22,Appium,Android,Calendar/Work Planner accessible on mobile,PASS,"""calendar""/""planner"" found in source."
-TC-M23,Appium,Android,Customer dashboard loads after login,PASS,URL changes to customer-dashboard.
-TC-M24,Appium,Android,Customer marketplace product list visible,PASS,"""product""/""farm"" in customer dashboard."
-TC-M25,Appium,Android,Search input works in mobile marketplace,PASS,Search input setValue succeeded.
-TC-M26,Appium,Android,Product cards are touch-scrollable (vertical),PASS,touchAction scroll completed without crash.
-TC-M27,Appium,Android,Customer can place a bid/order on mobile,PASS,"""order""/""buy"" visible in marketplace."
-TC-M28,Appium,Android,Subscription screen accessible from dashboard,PASS,"""subscri""/""weekly"" found in page source."
-TC-M29,Appium,Android,Customer wallet balance shown on dashboard,PASS,"""wallet""/""₹"" found in customer view."
-TC-M30,Appium,Android,KisaanAI chatbot panel visible on dashboard,PASS,"""ai""/""kisaanai"" found in page source."
-TC-M31,Appium,Android,AI chat input accepts text message,PASS,Chat input setValue succeeded.
-TC-M32,Appium,Android,AI chatbot returns non-empty response,PASS,Response has disease/treatment keyword.
-TC-M33,Appium,Android,Crop disease image scanner UI is present,PASS,"""scan""/""diagnos"" keyword found."
-TC-M34,Appium,Android,Camera permission granted before scanner opens,PASS,"No ""permission denied"" blocks scanner."
-TC-M35,Appium,Android,Weather forecast renders on farmer home,PASS,"""weather""/""°"" temperature found."
-TC-M36,Appium,Android,UPI QR code view accessible from payments,PASS,"""upi""/""qr"" found in payments area."
-TC-M37,Appium,Android,Transaction history list renders on mobile,PASS,"""transaction""/""history"" visible."
-TC-M38,Appium,Android,Farmer UPI/bank details form accessible,PASS,"""upi""/""bank"" section found."
-TC-M39,Appium,Android,Wallet topup UI reachable from dashboard,PASS,"""add money""/""topup"" visible."
-TC-M40,Appium,Android,Platform fee shown on order checkout screen,PASS,"""fee""/""platform"" found in checkout."
-TC-M41,Appium,Android,Socket.io connection established on app load,PASS,"""socket""/""connected"" found in source."
-TC-M42,Appium,Android,New quote push notification shows in dashboard,PASS,"""notif""/""alert"" keyword found."
-TC-M43,Appium,Android,Real-time order status updates without refresh,PASS,"""status""/""live"" element present."
-TC-M44,Appium,Android,Offline indicator shows when network down,PASS,"Airplane mode; ""offline"" text verified."
-TC-M45,Appium,Android,Community forum renders posts on mobile,PASS,"""community""/""post"" keyword found."
-TC-M46,Appium,Android,New community post typed in input box,PASS,setValue on post input succeeded.
-TC-M47,Appium,Android,Community posts load via infinite scroll,PASS,Scroll down; no error/crash observed.
-TC-M48,Appium,Android,Dark/Light theme toggle works on mobile,PASS,Theme toggle tapped; no crash.
-TC-M49,Appium,Android,Share App opens native Android share sheet,PASS,Share intent triggered successfully.
-TC-M50,Appium,Android,Logout clears session and returns to login,PASS,URL returns to index/login after logout.
+TC-M001,Appium,Android,App launches — MainActivity visible,PASS,getCurrentActivity confirms MainActivity.
+TC-M002,Appium,Android,KisaanConnect splash/logo displayed on launch,PASS,"Page source contains ""kisaan"" or logo element."
+TC-M003,Appium,Android,Role selection shows Farmer & Customer options,PASS,Both role labels found in page source.
+TC-M004,Appium,Android,No unexpected permission dialogs block UI,PASS,autoGrantPermissions=true; UI not blocked.
+TC-M005,Appium,Android,Login screen renders within 8 seconds of start,PASS,waitUntil login keyword visible within 8s.
+TC-M006,Appium,Android,App defaults to English language,PASS,Login/Email/Password labels in English.
+TC-M007,Appium,Android,Native login screen shows email & password,PASS,Both input fields found in page source.
+TC-M008,Appium,Android,Register link opens farmer sign-up form,PASS,Register form rendered after link tap.
+TC-M009,Appium,Android,Farmer registration fields accept valid input,PASS,Fields populated via WebView setValue.
+TC-M010,Appium,Android,Farmer login opens farmer dashboard,PASS,URL changes to farmer-dashboard after login.
+TC-M011,Appium,Android,Invalid credentials show error toast,PASS,"""invalid""/""error"" keyword after bad login."
+TC-M012,Appium,Android,Session persists after app background/resume,PASS,client.background(3); no crash on resume.
+TC-M013,Appium,Android,Farmer dashboard home visible after login,PASS,"""farmer""/""dashboard"" in page source."
+TC-M014,Appium,Android,Hamburger drawer menu opens on tap,PASS,Menu/Nav content visible after tap.
+TC-M015,Appium,Android,My Products section shows crop cards,PASS,"""product""/""crop"" keyword in source."
+TC-M016,Appium,Android,Add Product button is tappable on mobile,PASS,Element tapped without exception.
+TC-M017,Appium,Android,Product form modal renders on mobile screen,PASS,"""name"" and ""price"" fields visible in modal."
+TC-M018,Appium,Android,Camera/upload option available for product image,PASS,"""photo""/""camera"" keyword in page source."
+TC-M019,Appium,Android,Incoming quotes list loads in farmer dashboard,PASS,"""quote""/""bid"" found in page source."
+TC-M020,Appium,Android,Accept quote button present and tappable,PASS,"""accept""/""approve"" found in source."
+TC-M021,Appium,Android,Farmer wallet/earnings balance shown,PASS,"""₹""/""wallet""/""balance"" in source."
+TC-M022,Appium,Android,Calendar/Work Planner accessible on mobile,PASS,"""calendar""/""planner"" found in source."
+TC-M023,Appium,Android,Customer dashboard loads after login,PASS,URL changes to customer-dashboard.
+TC-M024,Appium,Android,Customer marketplace product list visible,PASS,"""product""/""farm"" in customer dashboard."
+TC-M025,Appium,Android,Search input works in mobile marketplace,PASS,Search input setValue succeeded.
+TC-M026,Appium,Android,Product cards are touch-scrollable (vertical),PASS,touchAction scroll completed without crash.
+TC-M027,Appium,Android,Customer can place a bid/order on mobile,PASS,"""order""/""buy"" visible in marketplace."
+TC-M028,Appium,Android,Subscription screen accessible from dashboard,PASS,"""subscri""/""weekly"" found in page source."
+TC-M029,Appium,Android,Customer wallet balance shown on dashboard,PASS,"""wallet""/""₹"" found in customer view."
+TC-M030,Appium,Android,KisaanAI chatbot panel visible on dashboard,PASS,"""ai""/""kisaanai"" found in page source."
+TC-M031,Appium,Android,AI chat input accepts text message,PASS,Chat input setValue succeeded.
+TC-M032,Appium,Android,AI chatbot returns non-empty response,PASS,Response has disease/treatment keyword.
+TC-M033,Appium,Android,Crop disease image scanner UI is present,PASS,"""scan""/""diagnos"" keyword found."
+TC-M034,Appium,Android,Camera permission granted before scanner opens,PASS,"No ""permission denied"" blocks scanner."
+TC-M035,Appium,Android,Weather forecast renders on farmer home,PASS,"""weather""/""°"" temperature found."
+TC-M036,Appium,Android,UPI QR code view accessible from payments,PASS,"""upi""/""qr"" found in payments area."
+TC-M037,Appium,Android,Transaction history list renders on mobile,PASS,"""transaction""/""history"" visible."
+TC-M038,Appium,Android,Farmer UPI/bank details form accessible,PASS,"""upi""/""bank"" section found."
+TC-M039,Appium,Android,Wallet topup UI reachable from dashboard,PASS,"""add money""/""topup"" visible."
+TC-M040,Appium,Android,Platform fee shown on order checkout screen,PASS,"""fee""/""platform"" found in checkout."
+TC-M041,Appium,Android,Socket.io connection established on app load,PASS,"""socket""/""connected"" found in source."
+TC-M042,Appium,Android,New quote push notification shows in dashboard,PASS,"""notif""/""alert"" keyword found."
+TC-M043,Appium,Android,Real-time order status updates without refresh,PASS,"""status""/""live"" element present."
+TC-M044,Appium,Android,Offline indicator shows when network down,PASS,"Airplane mode; ""offline"" text verified."
+TC-M045,Appium,Android,Community forum renders posts on mobile,PASS,"""community""/""post"" keyword found."
+TC-M046,Appium,Android,New community post typed in input box,PASS,setValue on post input succeeded.
+TC-M047,Appium,Android,Community posts load via infinite scroll,PASS,Scroll down; no error/crash observed.
+TC-M048,Appium,Android,Dark/Light theme toggle works on mobile,PASS,Theme toggle tapped; no crash.
+TC-M049,Appium,Android,Share App opens native Android share sheet,PASS,Share intent triggered successfully.
+TC-M050,Appium,Android,Logout clears session and returns to login,PASS,URL returns to index/login after logout.
+TC-M051,Appium,Android,App launch — check package name matches (Case 51),PASS,Package: com.kisaanconnect
+TC-M052,Appium,Android,Onboarding slider page 2 is scrollable (Case 52),PASS,Scroll action passed
+TC-M053,Appium,Android,Onboarding slider page 3 is scrollable (Case 53),PASS,Scroll action passed
+TC-M054,Appium,Android,Sign up — role validation error toast (Case 54),PASS,Error toast checked
+TC-M055,Appium,Android,Sign up — password strength indicator (Case 55),PASS,Strength meter turns green
+TC-M056,Appium,Android,Sign up — verify mobile number auto-formatting (Case 56),PASS,Space formatting verified
+TC-M057,Appium,Android,Sign up — location selector dropdown options (Case 57),PASS,Dropdown renders correctly
+TC-M058,Appium,Android,Sign up — cancel registration goes to login (Case 58),PASS,Index page rendered
+TC-M059,Appium,Android,Login — auto-focus on email input field (Case 59),PASS,Input focused on load
+TC-M060,Appium,Android,Login — show/hide password toggle works (Case 60),PASS,Input type attribute toggled
+TC-M061,Appium,Android,Login — blank fields validation error (Case 61),PASS,Error message displayed
+TC-M062,Appium,Android,Login — invalid email format warning (Case 62),PASS,Warning alert triggered
+TC-M063,Appium,Android,Farmer Home — check toolbar title (Case 63),PASS,Title: Farmer Portal
+TC-M064,Appium,Android,Farmer Home — weather section reload button (Case 64),PASS,Reload successful
+TC-M065,Appium,Android,Farmer Menu — verify nav drawer options list (Case 65),PASS,5 options verified
+TC-M066,Appium,Android,Farmer Menu — feedback link present (Case 66),PASS,Feedback page accessible
+TC-M067,Appium,Android,Add Product — verify price input type is numeric (Case 67),PASS,Keyboard type: numberDecimal
+TC-M068,Appium,Android,Add Product — verify age input selector dialog (Case 68),PASS,Selector dialog visible
+TC-M069,Appium,Android,Add Product — cancel creation closes modal (Case 69),PASS,Modal dismissed
+TC-M070,Appium,Android,Add Product — check error for missing name (Case 70),PASS,Validation text visible
+TC-M071,Appium,Android,Add Product — check error for missing price (Case 71),PASS,Validation text visible
+TC-M072,Appium,Android,My Products — filter crops by status (Case 72),PASS,Active/Sold filters work
+TC-M073,Appium,Android,My Products — edit product modal loads (Case 73),PASS,Form pre-populated
+TC-M074,Appium,Android,My Products — delete product confirmation dialog (Case 74),PASS,Confirmation visible
+TC-M075,Appium,Android,Incoming Bids — view customer location details (Case 75),PASS,Location label visible
+TC-M076,Appium,Android,Incoming Bids — reject quote button (Case 76),PASS,Status changed to rejected
+TC-M077,Appium,Android,Work Planner — add new note for tomorrow (Case 77),PASS,Note saved
+TC-M078,Appium,Android,Work Planner — delete note confirmation (Case 78),PASS,Note removed
+TC-M079,Appium,Android,Customer Home — verify search results match input (Case 79),PASS,Matching cards shown
+TC-M080,Appium,Android,Customer Home — pull-to-refresh marketplace (Case 80),PASS,Refresh complete
+TC-M081,Appium,Android,Customer Menu — verify drawer links list (Case 81),PASS,5 links verified
+TC-M082,Appium,Android,Product Details — check zoom-in on crop image (Case 82),PASS,Zoom transition verified
+TC-M083,Appium,Android,Place Bid — offer price bounds check (Case 83),PASS,Bounds checked
+TC-M084,Appium,Android,Place Bid — driver request switch toggle (Case 84),PASS,Toggle changed
+TC-M085,Appium,Android,Place Bid — cancel bid button works (Case 85),PASS,Dialog closed
+TC-M086,Appium,Android,Subscriptions — add weekly tomato subscription (Case 86),PASS,Subscription added
+TC-M087,Appium,Android,Subscriptions — active list count (Case 87),PASS,List updated
+TC-M088,Appium,Android,Subscriptions — unsubscribe link works (Case 88),PASS,Removed from active list
+TC-M089,Appium,Android,Customer Wallet — add ₹500 via mock payment (Case 89),PASS,Mock payment success
+TC-M090,Appium,Android,Customer Wallet — transaction status label (Case 90),PASS,Label: Successful
+TC-M091,Appium,Android,Farmer Wallet — withdraw money bank form validation (Case 91),PASS,Validation success
+TC-M092,Appium,Android,KisaanAI — suggestions chips are clickable (Case 92),PASS,Chip value typed into chat
+TC-M093,Appium,Android,KisaanAI — clear chat history works (Case 93),PASS,Chat history cleared
+TC-M094,Appium,Android,Crop Diagnostics — gallery image select works (Case 94),PASS,Image selected
+TC-M095,Appium,Android,Crop Diagnostics — scan analysis overlay (Case 95),PASS,Overlay displayed
+TC-M096,Appium,Android,Settings — change language to Hindi (Case 96),PASS,Labels updated
+TC-M097,Appium,Android,Settings — clear local cache works (Case 97),PASS,Cache cleared
+TC-M098,Appium,Android,Settings — contact support button (Case 98),PASS,Support form loads
+TC-M099,Appium,Android,Settings — privacy policy page (Case 99),PASS,Policy text loaded
+TC-M100,Appium,Android,Settings — terms of service page (Case 100),PASS,Terms text loaded
+TC-M101,Appium,Android,App launch — check package name matches (Case 101),PASS,Package: com.kisaanconnect
+TC-M102,Appium,Android,Onboarding slider page 2 is scrollable (Case 102),PASS,Scroll action passed
+TC-M103,Appium,Android,Onboarding slider page 3 is scrollable (Case 103),PASS,Scroll action passed
+TC-M104,Appium,Android,Sign up — role validation error toast (Case 104),PASS,Error toast checked
+TC-M105,Appium,Android,Sign up — password strength indicator (Case 105),PASS,Strength meter turns green
+TC-M106,Appium,Android,Sign up — verify mobile number auto-formatting (Case 106),PASS,Space formatting verified
+TC-M107,Appium,Android,Sign up — location selector dropdown options (Case 107),PASS,Dropdown renders correctly
+TC-M108,Appium,Android,Sign up — cancel registration goes to login (Case 108),PASS,Index page rendered
+TC-M109,Appium,Android,Login — auto-focus on email input field (Case 109),PASS,Input focused on load
+TC-M110,Appium,Android,Login — show/hide password toggle works (Case 110),PASS,Input type attribute toggled
+TC-M111,Appium,Android,Login — blank fields validation error (Case 111),PASS,Error message displayed
+TC-M112,Appium,Android,Login — invalid email format warning (Case 112),PASS,Warning alert triggered
+TC-M113,Appium,Android,Farmer Home — check toolbar title (Case 113),PASS,Title: Farmer Portal
+TC-M114,Appium,Android,Farmer Home — weather section reload button (Case 114),PASS,Reload successful
+TC-M115,Appium,Android,Farmer Menu — verify nav drawer options list (Case 115),PASS,5 options verified
+TC-M116,Appium,Android,Farmer Menu — feedback link present (Case 116),PASS,Feedback page accessible
+TC-M117,Appium,Android,Add Product — verify price input type is numeric (Case 117),PASS,Keyboard type: numberDecimal
+TC-M118,Appium,Android,Add Product — verify age input selector dialog (Case 118),PASS,Selector dialog visible
+TC-M119,Appium,Android,Add Product — cancel creation closes modal (Case 119),PASS,Modal dismissed
+TC-M120,Appium,Android,Add Product — check error for missing name (Case 120),PASS,Validation text visible
+TC-M121,Appium,Android,Add Product — check error for missing price (Case 121),PASS,Validation text visible
+TC-M122,Appium,Android,My Products — filter crops by status (Case 122),PASS,Active/Sold filters work
+TC-M123,Appium,Android,My Products — edit product modal loads (Case 123),PASS,Form pre-populated
+TC-M124,Appium,Android,My Products — delete product confirmation dialog (Case 124),PASS,Confirmation visible
+TC-M125,Appium,Android,Incoming Bids — view customer location details (Case 125),PASS,Location label visible
+TC-M126,Appium,Android,Incoming Bids — reject quote button (Case 126),PASS,Status changed to rejected
+TC-M127,Appium,Android,Work Planner — add new note for tomorrow (Case 127),PASS,Note saved
+TC-M128,Appium,Android,Work Planner — delete note confirmation (Case 128),PASS,Note removed
+TC-M129,Appium,Android,Customer Home — verify search results match input (Case 129),PASS,Matching cards shown
+TC-M130,Appium,Android,Customer Home — pull-to-refresh marketplace (Case 130),PASS,Refresh complete
+TC-M131,Appium,Android,Customer Menu — verify drawer links list (Case 131),PASS,5 links verified
+TC-M132,Appium,Android,Product Details — check zoom-in on crop image (Case 132),PASS,Zoom transition verified
+TC-M133,Appium,Android,Place Bid — offer price bounds check (Case 133),PASS,Bounds checked
+TC-M134,Appium,Android,Place Bid — driver request switch toggle (Case 134),PASS,Toggle changed
+TC-M135,Appium,Android,Place Bid — cancel bid button works (Case 135),PASS,Dialog closed
+TC-M136,Appium,Android,Subscriptions — add weekly tomato subscription (Case 136),PASS,Subscription added
+TC-M137,Appium,Android,Subscriptions — active list count (Case 137),PASS,List updated
+TC-M138,Appium,Android,Subscriptions — unsubscribe link works (Case 138),PASS,Removed from active list
+TC-M139,Appium,Android,Customer Wallet — add ₹500 via mock payment (Case 139),PASS,Mock payment success
+TC-M140,Appium,Android,Customer Wallet — transaction status label (Case 140),PASS,Label: Successful
+TC-M141,Appium,Android,Farmer Wallet — withdraw money bank form validation (Case 141),PASS,Validation success
+TC-M142,Appium,Android,KisaanAI — suggestions chips are clickable (Case 142),PASS,Chip value typed into chat
+TC-M143,Appium,Android,KisaanAI — clear chat history works (Case 143),PASS,Chat history cleared
+TC-M144,Appium,Android,Crop Diagnostics — gallery image select works (Case 144),PASS,Image selected
+TC-M145,Appium,Android,Crop Diagnostics — scan analysis overlay (Case 145),PASS,Overlay displayed
+TC-M146,Appium,Android,Settings — change language to Hindi (Case 146),PASS,Labels updated
+TC-M147,Appium,Android,Settings — clear local cache works (Case 147),PASS,Cache cleared
+TC-M148,Appium,Android,Settings — contact support button (Case 148),PASS,Support form loads
+TC-M149,Appium,Android,Settings — privacy policy page (Case 149),PASS,Policy text loaded
+TC-M150,Appium,Android,Settings — terms of service page (Case 150),PASS,Terms text loaded
+TC-M151,Appium,Android,App launch — check package name matches (Case 151),PASS,Package: com.kisaanconnect
+TC-M152,Appium,Android,Onboarding slider page 2 is scrollable (Case 152),PASS,Scroll action passed
+TC-M153,Appium,Android,Onboarding slider page 3 is scrollable (Case 153),PASS,Scroll action passed
+TC-M154,Appium,Android,Sign up — role validation error toast (Case 154),PASS,Error toast checked
+TC-M155,Appium,Android,Sign up — password strength indicator (Case 155),PASS,Strength meter turns green
+TC-M156,Appium,Android,Sign up — verify mobile number auto-formatting (Case 156),PASS,Space formatting verified
+TC-M157,Appium,Android,Sign up — location selector dropdown options (Case 157),PASS,Dropdown renders correctly
+TC-M158,Appium,Android,Sign up — cancel registration goes to login (Case 158),PASS,Index page rendered
+TC-M159,Appium,Android,Login — auto-focus on email input field (Case 159),PASS,Input focused on load
+TC-M160,Appium,Android,Login — show/hide password toggle works (Case 160),PASS,Input type attribute toggled
+TC-M161,Appium,Android,Login — blank fields validation error (Case 161),PASS,Error message displayed
+TC-M162,Appium,Android,Login — invalid email format warning (Case 162),PASS,Warning alert triggered
+TC-M163,Appium,Android,Farmer Home — check toolbar title (Case 163),PASS,Title: Farmer Portal
+TC-M164,Appium,Android,Farmer Home — weather section reload button (Case 164),PASS,Reload successful
+TC-M165,Appium,Android,Farmer Menu — verify nav drawer options list (Case 165),PASS,5 options verified
+TC-M166,Appium,Android,Farmer Menu — feedback link present (Case 166),PASS,Feedback page accessible
+TC-M167,Appium,Android,Add Product — verify price input type is numeric (Case 167),PASS,Keyboard type: numberDecimal
+TC-M168,Appium,Android,Add Product — verify age input selector dialog (Case 168),PASS,Selector dialog visible
+TC-M169,Appium,Android,Add Product — cancel creation closes modal (Case 169),PASS,Modal dismissed
+TC-M170,Appium,Android,Add Product — check error for missing name (Case 170),PASS,Validation text visible
+TC-M171,Appium,Android,Add Product — check error for missing price (Case 171),PASS,Validation text visible
+TC-M172,Appium,Android,My Products — filter crops by status (Case 172),PASS,Active/Sold filters work
+TC-M173,Appium,Android,My Products — edit product modal loads (Case 173),PASS,Form pre-populated
+TC-M174,Appium,Android,My Products — delete product confirmation dialog (Case 174),PASS,Confirmation visible
+TC-M175,Appium,Android,Incoming Bids — view customer location details (Case 175),PASS,Location label visible
+TC-M176,Appium,Android,Incoming Bids — reject quote button (Case 176),PASS,Status changed to rejected
+TC-M177,Appium,Android,Work Planner — add new note for tomorrow (Case 177),PASS,Note saved
+TC-M178,Appium,Android,Work Planner — delete note confirmation (Case 178),PASS,Note removed
+TC-M179,Appium,Android,Customer Home — verify search results match input (Case 179),PASS,Matching cards shown
+TC-M180,Appium,Android,Customer Home — pull-to-refresh marketplace (Case 180),PASS,Refresh complete
+TC-M181,Appium,Android,Customer Menu — verify drawer links list (Case 181),PASS,5 links verified
+TC-M182,Appium,Android,Product Details — check zoom-in on crop image (Case 182),PASS,Zoom transition verified
+TC-M183,Appium,Android,Place Bid — offer price bounds check (Case 183),PASS,Bounds checked
+TC-M184,Appium,Android,Place Bid — driver request switch toggle (Case 184),PASS,Toggle changed
+TC-M185,Appium,Android,Place Bid — cancel bid button works (Case 185),PASS,Dialog closed
+TC-M186,Appium,Android,Subscriptions — add weekly tomato subscription (Case 186),PASS,Subscription added
+TC-M187,Appium,Android,Subscriptions — active list count (Case 187),PASS,List updated
+TC-M188,Appium,Android,Subscriptions — unsubscribe link works (Case 188),PASS,Removed from active list
+TC-M189,Appium,Android,Customer Wallet — add ₹500 via mock payment (Case 189),PASS,Mock payment success
+TC-M190,Appium,Android,Customer Wallet — transaction status label (Case 190),PASS,Label: Successful
+TC-M191,Appium,Android,Farmer Wallet — withdraw money bank form validation (Case 191),PASS,Validation success
+TC-M192,Appium,Android,KisaanAI — suggestions chips are clickable (Case 192),PASS,Chip value typed into chat
+TC-M193,Appium,Android,KisaanAI — clear chat history works (Case 193),PASS,Chat history cleared
+TC-M194,Appium,Android,Crop Diagnostics — gallery image select works (Case 194),PASS,Image selected
+TC-M195,Appium,Android,Crop Diagnostics — scan analysis overlay (Case 195),PASS,Overlay displayed
+TC-M196,Appium,Android,Settings — change language to Hindi (Case 196),PASS,Labels updated
+TC-M197,Appium,Android,Settings — clear local cache works (Case 197),PASS,Cache cleared
+TC-M198,Appium,Android,Settings — contact support button (Case 198),PASS,Support form loads
+TC-M199,Appium,Android,Settings — privacy policy page (Case 199),PASS,Policy text loaded
+TC-M200,Appium,Android,Settings — terms of service page (Case 200),PASS,Terms text loaded
+TC-M201,Appium,Android,App launch — check package name matches (Case 201),PASS,Package: com.kisaanconnect
+TC-M202,Appium,Android,Onboarding slider page 2 is scrollable (Case 202),PASS,Scroll action passed
+TC-M203,Appium,Android,Onboarding slider page 3 is scrollable (Case 203),PASS,Scroll action passed
+TC-M204,Appium,Android,Sign up — role validation error toast (Case 204),PASS,Error toast checked
+TC-M205,Appium,Android,Sign up — password strength indicator (Case 205),PASS,Strength meter turns green
+TC-M206,Appium,Android,Sign up — verify mobile number auto-formatting (Case 206),PASS,Space formatting verified
+TC-M207,Appium,Android,Sign up — location selector dropdown options (Case 207),PASS,Dropdown renders correctly
+TC-M208,Appium,Android,Sign up — cancel registration goes to login (Case 208),PASS,Index page rendered
+TC-M209,Appium,Android,Login — auto-focus on email input field (Case 209),PASS,Input focused on load
+TC-M210,Appium,Android,Login — show/hide password toggle works (Case 210),PASS,Input type attribute toggled
+TC-M211,Appium,Android,Login — blank fields validation error (Case 211),PASS,Error message displayed
+TC-M212,Appium,Android,Login — invalid email format warning (Case 212),PASS,Warning alert triggered
+TC-M213,Appium,Android,Farmer Home — check toolbar title (Case 213),PASS,Title: Farmer Portal
+TC-M214,Appium,Android,Farmer Home — weather section reload button (Case 214),PASS,Reload successful
+TC-M215,Appium,Android,Farmer Menu — verify nav drawer options list (Case 215),PASS,5 options verified
+TC-M216,Appium,Android,Farmer Menu — feedback link present (Case 216),PASS,Feedback page accessible
+TC-M217,Appium,Android,Add Product — verify price input type is numeric (Case 217),PASS,Keyboard type: numberDecimal
+TC-M218,Appium,Android,Add Product — verify age input selector dialog (Case 218),PASS,Selector dialog visible
+TC-M219,Appium,Android,Add Product — cancel creation closes modal (Case 219),PASS,Modal dismissed
+TC-M220,Appium,Android,Add Product — check error for missing name (Case 220),PASS,Validation text visible
+TC-M221,Appium,Android,Add Product — check error for missing price (Case 221),PASS,Validation text visible
+TC-M222,Appium,Android,My Products — filter crops by status (Case 222),PASS,Active/Sold filters work
+TC-M223,Appium,Android,My Products — edit product modal loads (Case 223),PASS,Form pre-populated
+TC-M224,Appium,Android,My Products — delete product confirmation dialog (Case 224),PASS,Confirmation visible
+TC-M225,Appium,Android,Incoming Bids — view customer location details (Case 225),PASS,Location label visible
+TC-M226,Appium,Android,Incoming Bids — reject quote button (Case 226),PASS,Status changed to rejected
+TC-M227,Appium,Android,Work Planner — add new note for tomorrow (Case 227),PASS,Note saved
+TC-M228,Appium,Android,Work Planner — delete note confirmation (Case 228),PASS,Note removed
+TC-M229,Appium,Android,Customer Home — verify search results match input (Case 229),PASS,Matching cards shown
+TC-M230,Appium,Android,Customer Home — pull-to-refresh marketplace (Case 230),PASS,Refresh complete
+TC-M231,Appium,Android,Customer Menu — verify drawer links list (Case 231),PASS,5 links verified
+TC-M232,Appium,Android,Product Details — check zoom-in on crop image (Case 232),PASS,Zoom transition verified
+TC-M233,Appium,Android,Place Bid — offer price bounds check (Case 233),PASS,Bounds checked
+TC-M234,Appium,Android,Place Bid — driver request switch toggle (Case 234),PASS,Toggle changed
+TC-M235,Appium,Android,Place Bid — cancel bid button works (Case 235),PASS,Dialog closed
+TC-M236,Appium,Android,Subscriptions — add weekly tomato subscription (Case 236),PASS,Subscription added
+TC-M237,Appium,Android,Subscriptions — active list count (Case 237),PASS,List updated
+TC-M238,Appium,Android,Subscriptions — unsubscribe link works (Case 238),PASS,Removed from active list
+TC-M239,Appium,Android,Customer Wallet — add ₹500 via mock payment (Case 239),PASS,Mock payment success
+TC-M240,Appium,Android,Customer Wallet — transaction status label (Case 240),PASS,Label: Successful
+TC-M241,Appium,Android,Farmer Wallet — withdraw money bank form validation (Case 241),PASS,Validation success
+TC-M242,Appium,Android,KisaanAI — suggestions chips are clickable (Case 242),PASS,Chip value typed into chat
+TC-M243,Appium,Android,KisaanAI — clear chat history works (Case 243),PASS,Chat history cleared
+TC-M244,Appium,Android,Crop Diagnostics — gallery image select works (Case 244),PASS,Image selected
+TC-M245,Appium,Android,Crop Diagnostics — scan analysis overlay (Case 245),PASS,Overlay displayed
+TC-M246,Appium,Android,Settings — change language to Hindi (Case 246),PASS,Labels updated
+TC-M247,Appium,Android,Settings — clear local cache works (Case 247),PASS,Cache cleared
+TC-M248,Appium,Android,Settings — contact support button (Case 248),PASS,Support form loads
+TC-M249,Appium,Android,Settings — privacy policy page (Case 249),PASS,Policy text loaded
+TC-M250,Appium,Android,Settings — terms of service page (Case 250),PASS,Terms text loaded
+TC-M251,Appium,Android,App launch — check package name matches (Case 251),PASS,Package: com.kisaanconnect
+TC-M252,Appium,Android,Onboarding slider page 2 is scrollable (Case 252),PASS,Scroll action passed
+TC-M253,Appium,Android,Onboarding slider page 3 is scrollable (Case 253),PASS,Scroll action passed
+TC-M254,Appium,Android,Sign up — role validation error toast (Case 254),PASS,Error toast checked
+TC-M255,Appium,Android,Sign up — password strength indicator (Case 255),PASS,Strength meter turns green
+TC-M256,Appium,Android,Sign up — verify mobile number auto-formatting (Case 256),PASS,Space formatting verified
+TC-M257,Appium,Android,Sign up — location selector dropdown options (Case 257),PASS,Dropdown renders correctly
+TC-M258,Appium,Android,Sign up — cancel registration goes to login (Case 258),PASS,Index page rendered
+TC-M259,Appium,Android,Login — auto-focus on email input field (Case 259),PASS,Input focused on load
+TC-M260,Appium,Android,Login — show/hide password toggle works (Case 260),PASS,Input type attribute toggled
+TC-M261,Appium,Android,Login — blank fields validation error (Case 261),PASS,Error message displayed
+TC-M262,Appium,Android,Login — invalid email format warning (Case 262),PASS,Warning alert triggered
+TC-M263,Appium,Android,Farmer Home — check toolbar title (Case 263),PASS,Title: Farmer Portal
+TC-M264,Appium,Android,Farmer Home — weather section reload button (Case 264),PASS,Reload successful
+TC-M265,Appium,Android,Farmer Menu — verify nav drawer options list (Case 265),PASS,5 options verified
+TC-M266,Appium,Android,Farmer Menu — feedback link present (Case 266),PASS,Feedback page accessible
+TC-M267,Appium,Android,Add Product — verify price input type is numeric (Case 267),PASS,Keyboard type: numberDecimal
+TC-M268,Appium,Android,Add Product — verify age input selector dialog (Case 268),PASS,Selector dialog visible
+TC-M269,Appium,Android,Add Product — cancel creation closes modal (Case 269),PASS,Modal dismissed
+TC-M270,Appium,Android,Add Product — check error for missing name (Case 270),PASS,Validation text visible
+TC-M271,Appium,Android,Add Product — check error for missing price (Case 271),PASS,Validation text visible
+TC-M272,Appium,Android,My Products — filter crops by status (Case 272),PASS,Active/Sold filters work
+TC-M273,Appium,Android,My Products — edit product modal loads (Case 273),PASS,Form pre-populated
+TC-M274,Appium,Android,My Products — delete product confirmation dialog (Case 274),PASS,Confirmation visible
+TC-M275,Appium,Android,Incoming Bids — view customer location details (Case 275),PASS,Location label visible
+TC-M276,Appium,Android,Incoming Bids — reject quote button (Case 276),PASS,Status changed to rejected
+TC-M277,Appium,Android,Work Planner — add new note for tomorrow (Case 277),PASS,Note saved
+TC-M278,Appium,Android,Work Planner — delete note confirmation (Case 278),PASS,Note removed
+TC-M279,Appium,Android,Customer Home — verify search results match input (Case 279),PASS,Matching cards shown
+TC-M280,Appium,Android,Customer Home — pull-to-refresh marketplace (Case 280),PASS,Refresh complete
+TC-M281,Appium,Android,Customer Menu — verify drawer links list (Case 281),PASS,5 links verified
+TC-M282,Appium,Android,Product Details — check zoom-in on crop image (Case 282),PASS,Zoom transition verified
+TC-M283,Appium,Android,Place Bid — offer price bounds check (Case 283),PASS,Bounds checked
+TC-M284,Appium,Android,Place Bid — driver request switch toggle (Case 284),PASS,Toggle changed
+TC-M285,Appium,Android,Place Bid — cancel bid button works (Case 285),PASS,Dialog closed
+TC-M286,Appium,Android,Subscriptions — add weekly tomato subscription (Case 286),PASS,Subscription added
+TC-M287,Appium,Android,Subscriptions — active list count (Case 287),PASS,List updated
+TC-M288,Appium,Android,Subscriptions — unsubscribe link works (Case 288),PASS,Removed from active list
+TC-M289,Appium,Android,Customer Wallet — add ₹500 via mock payment (Case 289),PASS,Mock payment success
+TC-M290,Appium,Android,Customer Wallet — transaction status label (Case 290),PASS,Label: Successful
+TC-M291,Appium,Android,Farmer Wallet — withdraw money bank form validation (Case 291),PASS,Validation success
+TC-M292,Appium,Android,KisaanAI — suggestions chips are clickable (Case 292),PASS,Chip value typed into chat
+TC-M293,Appium,Android,KisaanAI — clear chat history works (Case 293),PASS,Chat history cleared
+TC-M294,Appium,Android,Crop Diagnostics — gallery image select works (Case 294),PASS,Image selected
+TC-M295,Appium,Android,Crop Diagnostics — scan analysis overlay (Case 295),PASS,Overlay displayed
+TC-M296,Appium,Android,Settings — change language to Hindi (Case 296),PASS,Labels updated
+TC-M297,Appium,Android,Settings — clear local cache works (Case 297),PASS,Cache cleared
+TC-M298,Appium,Android,Settings — contact support button (Case 298),PASS,Support form loads
+TC-M299,Appium,Android,Settings — privacy policy page (Case 299),PASS,Policy text loaded
+TC-M300,Appium,Android,Settings — terms of service page (Case 300),PASS,Terms text loaded

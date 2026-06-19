@@ -81,12 +81,12 @@ function bar(p, t, w=20) { const f=Math.round((p/Math.max(t,1))*w); return '█'
 /* ═══ MAIN ═══ */
 function main() {
     const SUITE_FILES = [
-        { name:'Selenium Web',    file:'Selenium_Report.csv',    icon:'🌐', expected:50 },
-        { name:'Appium Android',  file:'Appium_Report.csv',      icon:'📱', expected:50 },
-        { name:'Unit Tests',      file:'Unit_Report.csv',        icon:'🔬', expected:50 },
-        { name:'Validation',      file:'Validation_Report.csv',  icon:'✅', expected:40 },
-        { name:'Deployment',      file:'Deployment_Report.csv',  icon:'🚀', expected:15 },
-        { name:'Load Testing',    file:'Load_Report.csv',        icon:'📊', expected:100 },
+        { name:'Selenium Web',    file:'Selenium_Report.csv',    icon:'🌐', expected:300 },
+        { name:'Appium Android',  file:'Appium_Report.csv',      icon:'📱', expected:300 },
+        { name:'Unit Tests',      file:'Unit_Report.csv',        icon:'🔬', expected:300 },
+        { name:'Validation',      file:'Validation_Report.csv',  icon:'✅', expected:300 },
+        { name:'Deployment',      file:'Deployment_Report.csv',  icon:'🚀', expected:300 },
+        { name:'Load Testing',    file:'Load_Report.csv',        icon:'📊', expected:300 },
     ];
 
     const allRows = [];

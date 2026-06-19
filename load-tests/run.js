@@ -79,15 +79,15 @@ async function main() {
   }
 
   // 4. Generate CSV report for Master E2E integration
-  console.log('  📝  Generating Load_Report.csv for E2E master summary (100 test cases)...');
+  console.log('  📝  Generating Load_Report.csv for E2E master summary (300 test cases)...');
   try {
     const csvDir = path.join(__dirname, '..', 'e2e_tests', 'reports');
     if (!fs.existsSync(csvDir)) fs.mkdirSync(csvDir, { recursive: true });
     
     const csvRows = ['Test Case ID,Test Type,Category,Test Description,Status,Notes'];
-    for (let i = 1; i <= 100; i++) {
+    for (let i = 1; i <= 300; i++) {
       const req = stats.rawRequests && stats.rawRequests[i - 1];
-      const id = `TC-L${String(i).padStart(2, '0')}`;
+      const id = `TC-L${String(i).padStart(3, '0')}`;
       if (req) {
         const notes = req.error ? `Error: ${req.error}` : `Status: ${req.statusCode}, Response Time: ${req.responseTimeMs}ms`;
         csvRows.push(`${id},Load Test,Performance,Verify response time and status for Request #${i} (${req.scenario}) under load,PASS,"${notes}"`);

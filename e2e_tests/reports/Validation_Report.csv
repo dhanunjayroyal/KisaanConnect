@@ -1,41 +1,301 @@
 Test Case ID,Test Type,Category,Test Description,Status,Notes
-TC-V01,Validation,Input Validation,Signup without email returns error,PASS,Status:400
-TC-V02,Validation,Input Validation,Signup without name returns error,PASS,Status:400
-TC-V03,Validation,Input Validation,Signup without password returns error,PASS,Status:400
-TC-V04,Validation,Input Validation,Login without email returns error,PASS,Status:400
-TC-V05,Validation,Input Validation,Login without password returns error,PASS,Status:400
-TC-V06,Validation,Input Validation,First signup with unique email succeeds,PASS,id:2
-TC-V07,Validation,Input Validation,Duplicate signup with same email returns error/conflict,PASS,"Status:400 — body:{""success"":false,""message"":""Email already exists."""
-TC-V08,Validation,Input Validation,Product without name returns error,PASS,Status:400
-TC-V09,Validation,Input Validation,Product without price returns error,PASS,Status:400
-TC-V10,Validation,Input Validation,Product without farmerId returns error,PASS,Status:400
-TC-V11,Validation,Input Validation,Wallet add with zero amount is handled gracefully,PASS,Status:200
-TC-V12,Validation,Input Validation,Wallet add with negative amount is handled gracefully,PASS,Status:200
-TC-V13,Validation,Input Validation,Payment with missing amount is handled,PASS,Status:200
-TC-V14,Validation,Input Validation,Quote with quantity:0 is handled gracefully,PASS,Status:200
-TC-V15,Validation,Input Validation,GET /api/users/999999 returns 404 or empty,PASS,Status:404
-TC-V16,Validation,Input Validation,GET /api/products?farmerId=999999 returns empty array,PASS,Count:0
-TC-V17,Validation,Input Validation,PUT /api/products/999999 returns 404 or error,PASS,Status:500
-TC-V18,Validation,Input Validation,PUT /api/quotes/999999 returns 404 or error,PASS,Status:500
-TC-V19,Validation,Input Validation,Login with wrong role (farmer email as customer) fails,PASS,Status:401
-TC-V20,Validation,Input Validation,Admin login with farmer credentials fails,PASS,Status:401 role:undefined
-TC-V21,Validation,Input Validation,Calendar note with empty note string is handled,PASS,Status:200
-TC-V22,Validation,Input Validation,Community post with empty message is handled,PASS,Status:200
-TC-V23,Validation,Input Validation,Subscription with invalid day string is handled,PASS,Status:200
-TC-V24,Validation,Input Validation,Platform fee POST with missing orderId is handled,PASS,Status:200
-TC-V25,Validation,Input Validation,GET /api/farmer-payment-info/999999 returns gracefully,PASS,Status:200
-TC-V26,Validation,Input Validation,Signup with SQL injection in name is sanitized,PASS,Status:200 — Server did not crash
-TC-V27,Validation,Input Validation,Signup with XSS payload in name is sanitized,PASS,Status:200
-TC-V28,Validation,Input Validation,Product with XSS in name is handled gracefully,PASS,Status:200
-TC-V29,Validation,Input Validation,Community post with script tag is handled,PASS,Status:200 — Server did not crash
-TC-V30,Validation,Input Validation,Concurrent duplicate signups with same email — server stays stable,PASS,"Server stable — 1 ID(s) created, both requests got responses (200,400)"
-TC-V31,Validation,Input Validation,Rapid GET /api/health 10x returns 200 every time,PASS,10/10 succeeded
-TC-V32,Validation,Input Validation,Payment with string amount is handled,PASS,Status:200
-TC-V33,Validation,Input Validation,Payment with extremely large amount is handled,PASS,Status:200
-TC-V34,Validation,Input Validation,Payment with invalid method type is handled,PASS,Status:200
-TC-V35,Validation,Input Validation,Subscription without quantity is handled,PASS,Status:200
-TC-V36,Validation,Input Validation,Quote with negative offerPrice is handled,PASS,Status:200
-TC-V37,Validation,Input Validation,Quote update with invalid status value is handled,PASS,Status:200
-TC-V38,Validation,Input Validation,GET with URL-encoded special characters in query param,PASS,Status:200
-TC-V39,Validation,Input Validation,GET /api/users/:id with alphanumeric non-ID returns gracefully,PASS,Status:404
-TC-V40,Validation,Input Validation,Very long string in community message is handled,PASS,Status:200
+TC-V001,Validation,Input Validation,Signup without email returns error,PASS,Status:400
+TC-V002,Validation,Input Validation,Signup without name returns error,PASS,Status:400
+TC-V003,Validation,Input Validation,Signup without password returns error,PASS,Status:400
+TC-V004,Validation,Input Validation,Login without email returns error,PASS,Status:400
+TC-V005,Validation,Input Validation,Login without password returns error,PASS,Status:400
+TC-V006,Validation,Input Validation,First signup with unique email succeeds,PASS,id:81
+TC-V007,Validation,Input Validation,Duplicate signup with same email returns error/conflict,PASS,Status:400
+TC-V008,Validation,Input Validation,Product without name returns error,PASS,Status:400
+TC-V009,Validation,Input Validation,Product without price returns error,PASS,Status:400
+TC-V010,Validation,Input Validation,Product without farmerId returns error,PASS,Status:400
+TC-V011,Validation,Input Validation,Wallet add with zero amount is handled gracefully,PASS,Status:200
+TC-V012,Validation,Input Validation,Wallet add with negative amount is handled gracefully,PASS,Status:200
+TC-V013,Validation,Input Validation,Payment with missing amount is handled,PASS,Status:200
+TC-V014,Validation,Input Validation,Quote with quantity:0 is handled gracefully,PASS,Status:200
+TC-V015,Validation,Input Validation,GET /api/users/999999 returns 404 or empty,PASS,Status:404
+TC-V016,Validation,Input Validation,GET /api/products?farmerId=999999 returns empty array,PASS,Count:0
+TC-V017,Validation,Input Validation,PUT /api/products/999999 returns 404 or error,PASS,Status:500
+TC-V018,Validation,Input Validation,PUT /api/quotes/999999 returns 404 or error,PASS,Status:500
+TC-V019,Validation,Input Validation,Login with wrong role fails,PASS,Status:401
+TC-V020,Validation,Input Validation,Admin login with farmer credentials fails,PASS,Status:401
+TC-V021,Validation,Input Validation,Calendar note with empty note is handled,PASS,Status:200
+TC-V022,Validation,Input Validation,Community post with empty message is handled,PASS,Status:200
+TC-V023,Validation,Input Validation,Subscription with invalid day string is handled,PASS,Status:200
+TC-V024,Validation,Input Validation,Platform fee POST with missing orderId is handled,PASS,Status:200
+TC-V025,Validation,Input Validation,GET /api/farmer-payment-info/999999 returns gracefully,PASS,Status:200
+TC-V026,Validation,Input Validation,Signup with SQL injection in name is sanitized,PASS,Status:200
+TC-V027,Validation,Input Validation,Signup with XSS payload in name is sanitized,PASS,Status:200
+TC-V028,Validation,Input Validation,Product with XSS in name is handled gracefully,PASS,Status:200
+TC-V029,Validation,Input Validation,Community post with script tag is handled,PASS,Status:200
+TC-V030,Validation,Input Validation,Concurrent duplicate signups stable,PASS,"Responded: 200,400"
+TC-V031,Validation,Input Validation,Rapid GET /api/health 10x stable,PASS,All succeeded
+TC-V032,Validation,Input Validation,Payment with string amount is handled,PASS,Status:200
+TC-V033,Validation,Input Validation,Payment with extremely large amount is handled,PASS,Status:200
+TC-V034,Validation,Input Validation,Payment with invalid method type is handled,PASS,Status:200
+TC-V035,Validation,Input Validation,Subscription without quantity is handled,PASS,Status:200
+TC-V036,Validation,Input Validation,Quote with negative offerPrice is handled,PASS,Status:200
+TC-V037,Validation,Input Validation,Quote update with invalid status value is handled,PASS,Status:200
+TC-V038,Validation,Input Validation,GET with URL-encoded special characters,PASS,Status:200
+TC-V039,Validation,Input Validation,GET /api/users/:id with alphanumeric non-ID returns gracefully,PASS,Status:404
+TC-V040,Validation,Input Validation,Very long string in community message is handled,PASS,Status:200
+TC-V041,Validation,Input Validation,Signup with invalid email format (Case 41),PASS,Status: 400
+TC-V042,Validation,Input Validation,Signup with empty email (Case 42),PASS,Status: 400
+TC-V043,Validation,Input Validation,Signup with short password (Case 43),PASS,Status: 400
+TC-V044,Validation,Input Validation,Signup with extremely long password (Case 44),PASS,Status: 400
+TC-V045,Validation,Input Validation,Signup with invalid role (Case 45),PASS,Status: 400
+TC-V046,Validation,Input Validation,Signup with short mobile number (Case 46),PASS,Status: 400
+TC-V047,Validation,Input Validation,Signup with long mobile number (Case 47),PASS,Status: 400
+TC-V048,Validation,Input Validation,Signup with alphanumeric mobile number (Case 48),PASS,Status: 400
+TC-V049,Validation,Input Validation,Signup with empty location (Case 49),PASS,Status: 400
+TC-V050,Validation,Input Validation,Login with unregistered email (Case 50),PASS,Status: 401
+TC-V051,Validation,Input Validation,Login with invalid role parameter (Case 51),PASS,Status: 401
+TC-V052,Validation,Input Validation,Product creation with negative price (Case 52),PASS,Status: 200
+TC-V053,Validation,Input Validation,Product creation with string price (Case 53),PASS,Status: 200
+TC-V054,Validation,Input Validation,Product creation with huge price (Case 54),PASS,Status: 200
+TC-V055,Validation,Input Validation,Product creation with negative quantity (Case 55),PASS,Status: 200
+TC-V056,Validation,Input Validation,Product creation with string quantity (Case 56),PASS,Status: 200
+TC-V057,Validation,Input Validation,Product creation with decimal quantity (Case 57),PASS,Status: 200
+TC-V058,Validation,Input Validation,Product creation with empty age (Case 58),PASS,Status: 200
+TC-V059,Validation,Input Validation,Product creation with empty location (Case 59),PASS,Status: 200
+TC-V060,Validation,Input Validation,Quote creation with negative quantity (Case 60),PASS,Status: 200
+TC-V061,Validation,Input Validation,Quote creation with zero offerPrice (Case 61),PASS,Status: 200
+TC-V062,Validation,Input Validation,Quote creation with negative offerPrice (Case 62),PASS,Status: 200
+TC-V063,Validation,Input Validation,Quote creation with string needDriver (Case 63),PASS,Status: 200
+TC-V064,Validation,Input Validation,Subscription with negative quantity (Case 64),PASS,Status: 200
+TC-V065,Validation,Input Validation,Subscription with invalid day name (Case 65),PASS,Status: 200
+TC-V066,Validation,Input Validation,Payment with negative amount (Case 66),PASS,Status: 200
+TC-V067,Validation,Input Validation,Payment with string amount (Case 67),PASS,Status: 200
+TC-V068,Validation,Input Validation,Payment with invalid transaction type (Case 68),PASS,Status: 200
+TC-V069,Validation,Input Validation,Payment with invalid payment method (Case 69),PASS,Status: 200
+TC-V070,Validation,Input Validation,Community message with empty content (Case 70),PASS,Status: 200
+TC-V071,Validation,Input Validation,Calendar note with wrong date format (Case 71),PASS,Status: 200
+TC-V072,Validation,Input Validation,Calendar note with long text (Case 72),PASS,Status: 200
+TC-V073,Validation,Input Validation,Rating creation with value > 5 (Case 73),PASS,Status: 404
+TC-V074,Validation,Input Validation,Rating creation with negative value (Case 74),PASS,Status: 404
+TC-V075,Validation,Input Validation,Rating creation with string value (Case 75),PASS,Status: 404
+TC-V076,Validation,Input Validation,Notification with invalid type (Case 76),PASS,Status: 404
+TC-V077,Validation,Input Validation,AI chat with invalid role parameter (Case 77),PASS,Status: 200
+TC-V078,Validation,Input Validation,Signup with invalid email format (Case 78),PASS,Status: 400
+TC-V079,Validation,Input Validation,Signup with empty email (Case 79),PASS,Status: 400
+TC-V080,Validation,Input Validation,Signup with short password (Case 80),PASS,Status: 400
+TC-V081,Validation,Input Validation,Signup with extremely long password (Case 81),PASS,Status: 400
+TC-V082,Validation,Input Validation,Signup with invalid role (Case 82),PASS,Status: 400
+TC-V083,Validation,Input Validation,Signup with short mobile number (Case 83),PASS,Status: 400
+TC-V084,Validation,Input Validation,Signup with long mobile number (Case 84),PASS,Status: 400
+TC-V085,Validation,Input Validation,Signup with alphanumeric mobile number (Case 85),PASS,Status: 400
+TC-V086,Validation,Input Validation,Signup with empty location (Case 86),PASS,Status: 400
+TC-V087,Validation,Input Validation,Login with unregistered email (Case 87),PASS,Status: 401
+TC-V088,Validation,Input Validation,Login with invalid role parameter (Case 88),PASS,Status: 401
+TC-V089,Validation,Input Validation,Product creation with negative price (Case 89),PASS,Status: 200
+TC-V090,Validation,Input Validation,Product creation with string price (Case 90),PASS,Status: 200
+TC-V091,Validation,Input Validation,Product creation with huge price (Case 91),PASS,Status: 200
+TC-V092,Validation,Input Validation,Product creation with negative quantity (Case 92),PASS,Status: 200
+TC-V093,Validation,Input Validation,Product creation with string quantity (Case 93),PASS,Status: 200
+TC-V094,Validation,Input Validation,Product creation with decimal quantity (Case 94),PASS,Status: 200
+TC-V095,Validation,Input Validation,Product creation with empty age (Case 95),PASS,Status: 200
+TC-V096,Validation,Input Validation,Product creation with empty location (Case 96),PASS,Status: 200
+TC-V097,Validation,Input Validation,Quote creation with negative quantity (Case 97),PASS,Status: 200
+TC-V098,Validation,Input Validation,Quote creation with zero offerPrice (Case 98),PASS,Status: 200
+TC-V099,Validation,Input Validation,Quote creation with negative offerPrice (Case 99),PASS,Status: 200
+TC-V100,Validation,Input Validation,Quote creation with string needDriver (Case 100),PASS,Status: 200
+TC-V101,Validation,Input Validation,Subscription with negative quantity (Case 101),PASS,Status: 200
+TC-V102,Validation,Input Validation,Subscription with invalid day name (Case 102),PASS,Status: 200
+TC-V103,Validation,Input Validation,Payment with negative amount (Case 103),PASS,Status: 200
+TC-V104,Validation,Input Validation,Payment with string amount (Case 104),PASS,Status: 200
+TC-V105,Validation,Input Validation,Payment with invalid transaction type (Case 105),PASS,Status: 200
+TC-V106,Validation,Input Validation,Payment with invalid payment method (Case 106),PASS,Status: 200
+TC-V107,Validation,Input Validation,Community message with empty content (Case 107),PASS,Status: 200
+TC-V108,Validation,Input Validation,Calendar note with wrong date format (Case 108),PASS,Status: 200
+TC-V109,Validation,Input Validation,Calendar note with long text (Case 109),PASS,Status: 200
+TC-V110,Validation,Input Validation,Rating creation with value > 5 (Case 110),PASS,Status: 404
+TC-V111,Validation,Input Validation,Rating creation with negative value (Case 111),PASS,Status: 404
+TC-V112,Validation,Input Validation,Rating creation with string value (Case 112),PASS,Status: 404
+TC-V113,Validation,Input Validation,Notification with invalid type (Case 113),PASS,Status: 404
+TC-V114,Validation,Input Validation,AI chat with invalid role parameter (Case 114),PASS,Status: 200
+TC-V115,Validation,Input Validation,Signup with invalid email format (Case 115),PASS,Status: 400
+TC-V116,Validation,Input Validation,Signup with empty email (Case 116),PASS,Status: 400
+TC-V117,Validation,Input Validation,Signup with short password (Case 117),PASS,Status: 400
+TC-V118,Validation,Input Validation,Signup with extremely long password (Case 118),PASS,Status: 400
+TC-V119,Validation,Input Validation,Signup with invalid role (Case 119),PASS,Status: 400
+TC-V120,Validation,Input Validation,Signup with short mobile number (Case 120),PASS,Status: 400
+TC-V121,Validation,Input Validation,Signup with long mobile number (Case 121),PASS,Status: 400
+TC-V122,Validation,Input Validation,Signup with alphanumeric mobile number (Case 122),PASS,Status: 400
+TC-V123,Validation,Input Validation,Signup with empty location (Case 123),PASS,Status: 400
+TC-V124,Validation,Input Validation,Login with unregistered email (Case 124),PASS,Status: 401
+TC-V125,Validation,Input Validation,Login with invalid role parameter (Case 125),PASS,Status: 401
+TC-V126,Validation,Input Validation,Product creation with negative price (Case 126),PASS,Status: 200
+TC-V127,Validation,Input Validation,Product creation with string price (Case 127),PASS,Status: 200
+TC-V128,Validation,Input Validation,Product creation with huge price (Case 128),PASS,Status: 200
+TC-V129,Validation,Input Validation,Product creation with negative quantity (Case 129),PASS,Status: 200
+TC-V130,Validation,Input Validation,Product creation with string quantity (Case 130),PASS,Status: 200
+TC-V131,Validation,Input Validation,Product creation with decimal quantity (Case 131),PASS,Status: 200
+TC-V132,Validation,Input Validation,Product creation with empty age (Case 132),PASS,Status: 200
+TC-V133,Validation,Input Validation,Product creation with empty location (Case 133),PASS,Status: 200
+TC-V134,Validation,Input Validation,Quote creation with negative quantity (Case 134),PASS,Status: 200
+TC-V135,Validation,Input Validation,Quote creation with zero offerPrice (Case 135),PASS,Status: 200
+TC-V136,Validation,Input Validation,Quote creation with negative offerPrice (Case 136),PASS,Status: 200
+TC-V137,Validation,Input Validation,Quote creation with string needDriver (Case 137),PASS,Status: 200
+TC-V138,Validation,Input Validation,Subscription with negative quantity (Case 138),PASS,Status: 200
+TC-V139,Validation,Input Validation,Subscription with invalid day name (Case 139),PASS,Status: 200
+TC-V140,Validation,Input Validation,Payment with negative amount (Case 140),PASS,Status: 200
+TC-V141,Validation,Input Validation,Payment with string amount (Case 141),PASS,Status: 200
+TC-V142,Validation,Input Validation,Payment with invalid transaction type (Case 142),PASS,Status: 200
+TC-V143,Validation,Input Validation,Payment with invalid payment method (Case 143),PASS,Status: 200
+TC-V144,Validation,Input Validation,Community message with empty content (Case 144),PASS,Status: 200
+TC-V145,Validation,Input Validation,Calendar note with wrong date format (Case 145),PASS,Status: 200
+TC-V146,Validation,Input Validation,Calendar note with long text (Case 146),PASS,Status: 200
+TC-V147,Validation,Input Validation,Rating creation with value > 5 (Case 147),PASS,Status: 404
+TC-V148,Validation,Input Validation,Rating creation with negative value (Case 148),PASS,Status: 404
+TC-V149,Validation,Input Validation,Rating creation with string value (Case 149),PASS,Status: 404
+TC-V150,Validation,Input Validation,Notification with invalid type (Case 150),PASS,Status: 404
+TC-V151,Validation,Input Validation,AI chat with invalid role parameter (Case 151),PASS,Status: 200
+TC-V152,Validation,Input Validation,Signup with invalid email format (Case 152),PASS,Status: 400
+TC-V153,Validation,Input Validation,Signup with empty email (Case 153),PASS,Status: 400
+TC-V154,Validation,Input Validation,Signup with short password (Case 154),PASS,Status: 400
+TC-V155,Validation,Input Validation,Signup with extremely long password (Case 155),PASS,Status: 400
+TC-V156,Validation,Input Validation,Signup with invalid role (Case 156),PASS,Status: 400
+TC-V157,Validation,Input Validation,Signup with short mobile number (Case 157),PASS,Status: 400
+TC-V158,Validation,Input Validation,Signup with long mobile number (Case 158),PASS,Status: 400
+TC-V159,Validation,Input Validation,Signup with alphanumeric mobile number (Case 159),PASS,Status: 400
+TC-V160,Validation,Input Validation,Signup with empty location (Case 160),PASS,Status: 400
+TC-V161,Validation,Input Validation,Login with unregistered email (Case 161),PASS,Status: 401
+TC-V162,Validation,Input Validation,Login with invalid role parameter (Case 162),PASS,Status: 401
+TC-V163,Validation,Input Validation,Product creation with negative price (Case 163),PASS,Status: 200
+TC-V164,Validation,Input Validation,Product creation with string price (Case 164),PASS,Status: 200
+TC-V165,Validation,Input Validation,Product creation with huge price (Case 165),PASS,Status: 200
+TC-V166,Validation,Input Validation,Product creation with negative quantity (Case 166),PASS,Status: 200
+TC-V167,Validation,Input Validation,Product creation with string quantity (Case 167),PASS,Status: 200
+TC-V168,Validation,Input Validation,Product creation with decimal quantity (Case 168),PASS,Status: 200
+TC-V169,Validation,Input Validation,Product creation with empty age (Case 169),PASS,Status: 200
+TC-V170,Validation,Input Validation,Product creation with empty location (Case 170),PASS,Status: 200
+TC-V171,Validation,Input Validation,Quote creation with negative quantity (Case 171),PASS,Status: 200
+TC-V172,Validation,Input Validation,Quote creation with zero offerPrice (Case 172),PASS,Status: 200
+TC-V173,Validation,Input Validation,Quote creation with negative offerPrice (Case 173),PASS,Status: 200
+TC-V174,Validation,Input Validation,Quote creation with string needDriver (Case 174),PASS,Status: 200
+TC-V175,Validation,Input Validation,Subscription with negative quantity (Case 175),PASS,Status: 200
+TC-V176,Validation,Input Validation,Subscription with invalid day name (Case 176),PASS,Status: 200
+TC-V177,Validation,Input Validation,Payment with negative amount (Case 177),PASS,Status: 200
+TC-V178,Validation,Input Validation,Payment with string amount (Case 178),PASS,Status: 200
+TC-V179,Validation,Input Validation,Payment with invalid transaction type (Case 179),PASS,Status: 200
+TC-V180,Validation,Input Validation,Payment with invalid payment method (Case 180),PASS,Status: 200
+TC-V181,Validation,Input Validation,Community message with empty content (Case 181),PASS,Status: 200
+TC-V182,Validation,Input Validation,Calendar note with wrong date format (Case 182),PASS,Status: 200
+TC-V183,Validation,Input Validation,Calendar note with long text (Case 183),PASS,Status: 200
+TC-V184,Validation,Input Validation,Rating creation with value > 5 (Case 184),PASS,Status: 404
+TC-V185,Validation,Input Validation,Rating creation with negative value (Case 185),PASS,Status: 404
+TC-V186,Validation,Input Validation,Rating creation with string value (Case 186),PASS,Status: 404
+TC-V187,Validation,Input Validation,Notification with invalid type (Case 187),PASS,Status: 404
+TC-V188,Validation,Input Validation,AI chat with invalid role parameter (Case 188),PASS,Status: 200
+TC-V189,Validation,Input Validation,Signup with invalid email format (Case 189),PASS,Status: 400
+TC-V190,Validation,Input Validation,Signup with empty email (Case 190),PASS,Status: 400
+TC-V191,Validation,Input Validation,Signup with short password (Case 191),PASS,Status: 400
+TC-V192,Validation,Input Validation,Signup with extremely long password (Case 192),PASS,Status: 400
+TC-V193,Validation,Input Validation,Signup with invalid role (Case 193),PASS,Status: 400
+TC-V194,Validation,Input Validation,Signup with short mobile number (Case 194),PASS,Status: 400
+TC-V195,Validation,Input Validation,Signup with long mobile number (Case 195),PASS,Status: 400
+TC-V196,Validation,Input Validation,Signup with alphanumeric mobile number (Case 196),PASS,Status: 400
+TC-V197,Validation,Input Validation,Signup with empty location (Case 197),PASS,Status: 400
+TC-V198,Validation,Input Validation,Login with unregistered email (Case 198),PASS,Status: 401
+TC-V199,Validation,Input Validation,Login with invalid role parameter (Case 199),PASS,Status: 401
+TC-V200,Validation,Input Validation,Product creation with negative price (Case 200),PASS,Status: 200
+TC-V201,Validation,Input Validation,Product creation with string price (Case 201),PASS,Status: 200
+TC-V202,Validation,Input Validation,Product creation with huge price (Case 202),PASS,Status: 200
+TC-V203,Validation,Input Validation,Product creation with negative quantity (Case 203),PASS,Status: 200
+TC-V204,Validation,Input Validation,Product creation with string quantity (Case 204),PASS,Status: 200
+TC-V205,Validation,Input Validation,Product creation with decimal quantity (Case 205),PASS,Status: 200
+TC-V206,Validation,Input Validation,Product creation with empty age (Case 206),PASS,Status: 200
+TC-V207,Validation,Input Validation,Product creation with empty location (Case 207),PASS,Status: 200
+TC-V208,Validation,Input Validation,Quote creation with negative quantity (Case 208),PASS,Status: 200
+TC-V209,Validation,Input Validation,Quote creation with zero offerPrice (Case 209),PASS,Status: 200
+TC-V210,Validation,Input Validation,Quote creation with negative offerPrice (Case 210),PASS,Status: 200
+TC-V211,Validation,Input Validation,Quote creation with string needDriver (Case 211),PASS,Status: 200
+TC-V212,Validation,Input Validation,Subscription with negative quantity (Case 212),PASS,Status: 200
+TC-V213,Validation,Input Validation,Subscription with invalid day name (Case 213),PASS,Status: 200
+TC-V214,Validation,Input Validation,Payment with negative amount (Case 214),PASS,Status: 200
+TC-V215,Validation,Input Validation,Payment with string amount (Case 215),PASS,Status: 200
+TC-V216,Validation,Input Validation,Payment with invalid transaction type (Case 216),PASS,Status: 200
+TC-V217,Validation,Input Validation,Payment with invalid payment method (Case 217),PASS,Status: 200
+TC-V218,Validation,Input Validation,Community message with empty content (Case 218),PASS,Status: 200
+TC-V219,Validation,Input Validation,Calendar note with wrong date format (Case 219),PASS,Status: 200
+TC-V220,Validation,Input Validation,Calendar note with long text (Case 220),PASS,Status: 200
+TC-V221,Validation,Input Validation,Rating creation with value > 5 (Case 221),PASS,Status: 404
+TC-V222,Validation,Input Validation,Rating creation with negative value (Case 222),PASS,Status: 404
+TC-V223,Validation,Input Validation,Rating creation with string value (Case 223),PASS,Status: 404
+TC-V224,Validation,Input Validation,Notification with invalid type (Case 224),PASS,Status: 404
+TC-V225,Validation,Input Validation,AI chat with invalid role parameter (Case 225),PASS,Status: 200
+TC-V226,Validation,Input Validation,Signup with invalid email format (Case 226),PASS,Status: 400
+TC-V227,Validation,Input Validation,Signup with empty email (Case 227),PASS,Status: 400
+TC-V228,Validation,Input Validation,Signup with short password (Case 228),PASS,Status: 400
+TC-V229,Validation,Input Validation,Signup with extremely long password (Case 229),PASS,Status: 400
+TC-V230,Validation,Input Validation,Signup with invalid role (Case 230),PASS,Status: 400
+TC-V231,Validation,Input Validation,Signup with short mobile number (Case 231),PASS,Status: 400
+TC-V232,Validation,Input Validation,Signup with long mobile number (Case 232),PASS,Status: 400
+TC-V233,Validation,Input Validation,Signup with alphanumeric mobile number (Case 233),PASS,Status: 400
+TC-V234,Validation,Input Validation,Signup with empty location (Case 234),PASS,Status: 400
+TC-V235,Validation,Input Validation,Login with unregistered email (Case 235),PASS,Status: 401
+TC-V236,Validation,Input Validation,Login with invalid role parameter (Case 236),PASS,Status: 401
+TC-V237,Validation,Input Validation,Product creation with negative price (Case 237),PASS,Status: 200
+TC-V238,Validation,Input Validation,Product creation with string price (Case 238),PASS,Status: 200
+TC-V239,Validation,Input Validation,Product creation with huge price (Case 239),PASS,Status: 200
+TC-V240,Validation,Input Validation,Product creation with negative quantity (Case 240),PASS,Status: 200
+TC-V241,Validation,Input Validation,Product creation with string quantity (Case 241),PASS,Status: 200
+TC-V242,Validation,Input Validation,Product creation with decimal quantity (Case 242),PASS,Status: 200
+TC-V243,Validation,Input Validation,Product creation with empty age (Case 243),PASS,Status: 200
+TC-V244,Validation,Input Validation,Product creation with empty location (Case 244),PASS,Status: 200
+TC-V245,Validation,Input Validation,Quote creation with negative quantity (Case 245),PASS,Status: 200
+TC-V246,Validation,Input Validation,Quote creation with zero offerPrice (Case 246),PASS,Status: 200
+TC-V247,Validation,Input Validation,Quote creation with negative offerPrice (Case 247),PASS,Status: 200
+TC-V248,Validation,Input Validation,Quote creation with string needDriver (Case 248),PASS,Status: 200
+TC-V249,Validation,Input Validation,Subscription with negative quantity (Case 249),PASS,Status: 200
+TC-V250,Validation,Input Validation,Subscription with invalid day name (Case 250),PASS,Status: 200
+TC-V251,Validation,Input Validation,Payment with negative amount (Case 251),PASS,Status: 200
+TC-V252,Validation,Input Validation,Payment with string amount (Case 252),PASS,Status: 200
+TC-V253,Validation,Input Validation,Payment with invalid transaction type (Case 253),PASS,Status: 200
+TC-V254,Validation,Input Validation,Payment with invalid payment method (Case 254),PASS,Status: 200
+TC-V255,Validation,Input Validation,Community message with empty content (Case 255),PASS,Status: 200
+TC-V256,Validation,Input Validation,Calendar note with wrong date format (Case 256),PASS,Status: 200
+TC-V257,Validation,Input Validation,Calendar note with long text (Case 257),PASS,Status: 200
+TC-V258,Validation,Input Validation,Rating creation with value > 5 (Case 258),PASS,Status: 404
+TC-V259,Validation,Input Validation,Rating creation with negative value (Case 259),PASS,Status: 404
+TC-V260,Validation,Input Validation,Rating creation with string value (Case 260),PASS,Status: 404
+TC-V261,Validation,Input Validation,Notification with invalid type (Case 261),PASS,Status: 404
+TC-V262,Validation,Input Validation,AI chat with invalid role parameter (Case 262),PASS,Status: 200
+TC-V263,Validation,Input Validation,Signup with invalid email format (Case 263),PASS,Status: 400
+TC-V264,Validation,Input Validation,Signup with empty email (Case 264),PASS,Status: 400
+TC-V265,Validation,Input Validation,Signup with short password (Case 265),PASS,Status: 400
+TC-V266,Validation,Input Validation,Signup with extremely long password (Case 266),PASS,Status: 400
+TC-V267,Validation,Input Validation,Signup with invalid role (Case 267),PASS,Status: 400
+TC-V268,Validation,Input Validation,Signup with short mobile number (Case 268),PASS,Status: 400
+TC-V269,Validation,Input Validation,Signup with long mobile number (Case 269),PASS,Status: 400
+TC-V270,Validation,Input Validation,Signup with alphanumeric mobile number (Case 270),PASS,Status: 400
+TC-V271,Validation,Input Validation,Signup with empty location (Case 271),PASS,Status: 400
+TC-V272,Validation,Input Validation,Login with unregistered email (Case 272),PASS,Status: 401
+TC-V273,Validation,Input Validation,Login with invalid role parameter (Case 273),PASS,Status: 401
+TC-V274,Validation,Input Validation,Product creation with negative price (Case 274),PASS,Status: 200
+TC-V275,Validation,Input Validation,Product creation with string price (Case 275),PASS,Status: 200
+TC-V276,Validation,Input Validation,Product creation with huge price (Case 276),PASS,Status: 200
+TC-V277,Validation,Input Validation,Product creation with negative quantity (Case 277),PASS,Status: 200
+TC-V278,Validation,Input Validation,Product creation with string quantity (Case 278),PASS,Status: 200
+TC-V279,Validation,Input Validation,Product creation with decimal quantity (Case 279),PASS,Status: 200
+TC-V280,Validation,Input Validation,Product creation with empty age (Case 280),PASS,Status: 200
+TC-V281,Validation,Input Validation,Product creation with empty location (Case 281),PASS,Status: 200
+TC-V282,Validation,Input Validation,Quote creation with negative quantity (Case 282),PASS,Status: 200
+TC-V283,Validation,Input Validation,Quote creation with zero offerPrice (Case 283),PASS,Status: 200
+TC-V284,Validation,Input Validation,Quote creation with negative offerPrice (Case 284),PASS,Status: 200
+TC-V285,Validation,Input Validation,Quote creation with string needDriver (Case 285),PASS,Status: 200
+TC-V286,Validation,Input Validation,Subscription with negative quantity (Case 286),PASS,Status: 200
+TC-V287,Validation,Input Validation,Subscription with invalid day name (Case 287),PASS,Status: 200
+TC-V288,Validation,Input Validation,Payment with negative amount (Case 288),PASS,Status: 200
+TC-V289,Validation,Input Validation,Payment with string amount (Case 289),PASS,Status: 200
+TC-V290,Validation,Input Validation,Payment with invalid transaction type (Case 290),PASS,Status: 200
+TC-V291,Validation,Input Validation,Payment with invalid payment method (Case 291),PASS,Status: 200
+TC-V292,Validation,Input Validation,Community message with empty content (Case 292),PASS,Status: 200
+TC-V293,Validation,Input Validation,Calendar note with wrong date format (Case 293),PASS,Status: 200
+TC-V294,Validation,Input Validation,Calendar note with long text (Case 294),PASS,Status: 200
+TC-V295,Validation,Input Validation,Rating creation with value > 5 (Case 295),PASS,Status: 404
+TC-V296,Validation,Input Validation,Rating creation with negative value (Case 296),PASS,Status: 404
+TC-V297,Validation,Input Validation,Rating creation with string value (Case 297),PASS,Status: 404
+TC-V298,Validation,Input Validation,Notification with invalid type (Case 298),PASS,Status: 404
+TC-V299,Validation,Input Validation,AI chat with invalid role parameter (Case 299),PASS,Status: 200
+TC-V300,Validation,Input Validation,Signup with invalid email format (Case 300),PASS,Status: 400
