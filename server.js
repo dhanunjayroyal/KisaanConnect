@@ -651,8 +651,16 @@ app.post('/api/login', async (req, res) => {
     if (!role) return res.status(400).json({ success: false, message: 'Role is required.' });
     try {
         const user = await fdb.findUserByEmailAndRole(email, password, role);
-        if (user) res.json(user);
-        else res.status(401).json({ success: false, message: 'Invalid email, password, or role.' });
+        if (user) {
+            res.json({
+                ...user,
+                success: true,
+                token: "session_token_" + user.id,
+                user: user
+            });
+        } else {
+            res.status(401).json({ success: false, message: 'Invalid email, password, or role.' });
+        }
     } catch (e) {
         res.status(500).json({ success: false, message: e.message });
     }
@@ -672,7 +680,12 @@ app.post('/api/signup', async (req, res) => {
         // Send Welcome Email
         sendWelcomeEmail(email, name, role).catch(err => console.error('Error in sendWelcomeEmail:', err.message));
 
-        res.json(user);
+        res.json({
+            ...user,
+            success: true,
+            token: "session_token_" + user.id,
+            user: user
+        });
     } catch (e) {
         res.status(500).json({ success: false, message: e.message });
     }

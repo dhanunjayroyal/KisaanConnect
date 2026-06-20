@@ -78,3 +78,19 @@ filesToCopy.forEach(file => {
 });
 
 console.log(`[build-env] ✅ Clean dist/ folder generated with ${copiedCount} files for web deployment.`);
+
+// 3. Duplicate dist to public for Vercel Services compatibility
+const publicPath = path.join(__dirname, 'public');
+if (!fs.existsSync(publicPath)) {
+    fs.mkdirSync(publicPath, { recursive: true });
+}
+filesToCopy.forEach(file => {
+    const src = path.join(distPath, file);
+    const dest = path.join(publicPath, file);
+    if (fs.existsSync(src)) {
+        fs.copyFileSync(src, dest);
+    }
+});
+fs.copyFileSync(path.join(distPath, 'env-config.js'), path.join(publicPath, 'env-config.js'));
+console.log('[build-env] ✅ Duplicate public/ folder generated for Vercel Services compatibility.');
+

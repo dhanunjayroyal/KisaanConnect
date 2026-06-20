@@ -37,7 +37,19 @@ suspend fun <T> safeApiCall(block: suspend () -> Response<T>): Resource<T> {
             else Resource.Error("Empty response body", response.code())
         } else {
             val errorMsg = response.errorBody()?.string() ?: "Request failed"
-            Resource.Error(errorMsg, response.code())
+            val parsedMsg = try {
+                val json = org.json.JSONObject(errorMsg)
+                if (json.has("message")) {
+                    json.getString("message")
+                } else if (json.has("error")) {
+                    json.getString("error")
+                } else {
+                    errorMsg
+                }
+            } catch (e: Exception) {
+                errorMsg
+            }
+            Resource.Error(parsedMsg, response.code())
         }
     } catch (e: java.net.UnknownHostException) {
         Resource.Error("No internet connection. Please check your network.")

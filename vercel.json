@@ -1,28 +1,62 @@
 {
   "version": 2,
   "buildCommand": "node build-env.js",
-  "outputDirectory": ".",
+  "outputDirectory": "dist",
   "routes": [
-    { "src": "/farmer",   "dest": "/farmer-dashboard.html"   },
-    { "src": "/customer", "dest": "/customer-dashboard.html" },
-    { "src": "/admin",    "dest": "/admin-dashboard.html"    },
-    { "src": "/login",    "dest": "/admin-login.html"        },
-    { "src": "/(.*)",     "dest": "/$1"                      }
+    {
+      "src": "/farmer",
+      "dest": "/farmer-dashboard.html"
+    },
+    {
+      "src": "/customer",
+      "dest": "/customer-dashboard.html"
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin-dashboard.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/admin-login.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
   ],
   "headers": [
     {
       "source": "/(.*).html",
       "headers": [
-        { "key": "Cache-Control",           "value": "no-cache, no-store, must-revalidate" },
-        { "key": "X-Frame-Options",         "value": "SAMEORIGIN" },
-        { "key": "X-Content-Type-Options",  "value": "nosniff" }
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
       ]
     },
     {
       "source": "/(.*).(js|css|png|jpg|svg|ico|webp)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
-  ]
+  ],
+  "experimentalServices": {
+    "web": {
+      "entrypoint": "package.json",
+      "routePrefix": "/",
+      "builder": "@vercel/static-build"
+    }
+  }
 }
