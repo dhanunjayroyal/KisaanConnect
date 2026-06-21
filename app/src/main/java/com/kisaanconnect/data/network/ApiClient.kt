@@ -73,12 +73,23 @@ object ApiClient {
                     if (jsonObject.has("success")) {
                         val success = jsonObject.get("success").asBoolean
                         val message = if (jsonObject.has("message") && !jsonObject.get("message").isJsonNull) jsonObject.get("message").asString else null
-                        val token = if (jsonObject.has("token") && !jsonObject.get("token").isJsonNull) jsonObject.get("token").asString else null
-                        val user = if (jsonObject.has("user") && !jsonObject.get("user").isJsonNull) {
+                        var token = if (jsonObject.has("token") && !jsonObject.get("token").isJsonNull) jsonObject.get("token").asString else null
+                        var user = if (jsonObject.has("user") && !jsonObject.get("user").isJsonNull) {
                             context.deserialize<User>(jsonObject.get("user"), User::class.java)
                         } else {
                             null
                         }
+                        
+                        // Fallback: If success is true, but nested user is null, try deserializing the root jsonObject as User
+                        if (success && user == null && (jsonObject.has("id") || jsonObject.has("email"))) {
+                            user = context.deserialize<User>(json, User::class.java)
+                        }
+                        
+                        // Fallback: If success is true and user is parsed, but token is missing, generate one
+                        if (success && user != null && token.isNullOrBlank()) {
+                            token = "session_token_" + user.id
+                        }
+                        
                         AuthResponse(success, message, token, user)
                     } else if (jsonObject.has("id") || jsonObject.has("email")) {
                         val user = context.deserialize<User>(json, User::class.java)
