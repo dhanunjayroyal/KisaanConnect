@@ -1762,7 +1762,7 @@ catch (error) {
                 }
             } finally {
                 clearTimeout(timeoutId);
-                btn.innerHTML = origText;
+                btn.textContent = isSignup ? getT('signup') : getT('login');
                 btn.disabled = false;
             }
         }
